@@ -1,0 +1,9 @@
+<svg width="1200" height="720" viewBox="0 0 1200 720" xmlns="http://www.w3.org/2000/svg">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#A71930"/><stop offset="1" stop-color="#0B5E9C"/></linearGradient></defs>
+<rect width="1200" height="720" rx="44" fill="url(#g)"/>
+<path d="M600 140L1020 590H180z" fill="#EAAB00"/><rect x="574" y="295" width="52" height="150" rx="24" fill="#003F72"/><circle cx="600" cy="505" r="28" fill="#003F72"/><circle cx="920" cy="430" r="92" fill="#A71930" opacity=".75"/>
+<rect x="72" y="74" width="72" height="6" rx="3" fill="#EAAB00"/>
+<text x="72" y="138" fill="#fff" font-family="Arial" font-size="54" font-weight="900">Estafas y phishing</text>
+<text x="74" y="192" fill="#EAF3FB" font-family="Arial" font-size="25">Aprende a identificar señales de fraude</text>
+<text x="74" y="648" fill="#fff" font-family="Arial" font-size="30" font-weight="900">CSIRT UTPL</text>
+</svg>

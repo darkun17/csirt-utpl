@@ -1,0 +1,37 @@
+<svg width="1600" height="760" viewBox="0 0 1600 760" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="760" fill="#0B5E9C"/>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#062F56"/>
+      <stop offset=".55" stop-color="#0B5E9C"/>
+      <stop offset="1" stop-color="#EAAB00"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#EAF3FB" stop-opacity=".7"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity=".18"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="760" fill="url(#sky)"/>
+  <circle cx="1320" cy="130" r="170" fill="#FFFFFF" opacity=".09"/>
+  <circle cx="1180" cy="560" r="320" fill="#FFFFFF" opacity=".07"/>
+  <path d="M0 562c182-86 300-94 488-26 218 80 424 86 666-12 170-68 326-82 446-38v274H0V562z" fill="#062F56" opacity=".56"/>
+  <g transform="translate(760 188)">
+    <rect x="0" y="86" width="430" height="266" rx="12" fill="#EAF3FB" opacity=".88"/>
+    <rect x="28" y="124" width="376" height="50" fill="url(#glass)"/>
+    <rect x="28" y="194" width="376" height="50" fill="url(#glass)"/>
+    <rect x="28" y="264" width="376" height="50" fill="url(#glass)"/>
+    <rect x="70" y="22" width="288" height="74" rx="8" fill="#003F72"/>
+    <text x="132" y="70" font-family="Arial, sans-serif" font-size="38" font-weight="900" fill="#FFFFFF">UTPL</text>
+  </g>
+  <g transform="translate(1120 310)" opacity=".95">
+    <path d="M126 0l126 44v90c0 96-55 150-126 178C55 284 0 230 0 134V44L126 0z" fill="#EAAB00"/>
+    <path d="M82 152l34 34 74-90" stroke="#003F72" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g opacity=".5" stroke="#FFFFFF" stroke-width="2">
+    <path d="M150 170h190m-90-86v232M260 118l-96 160m18-178l154 176"/>
+    <circle cx="150" cy="170" r="11" fill="#FFFFFF"/>
+    <circle cx="340" cy="170" r="11" fill="#FFFFFF"/>
+    <circle cx="250" cy="84" r="11" fill="#FFFFFF"/>
+    <circle cx="250" cy="316" r="11" fill="#FFFFFF"/>
+  </g>
+</svg>

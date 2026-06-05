@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 200" fill="none">
+  <!-- Shield / Escudo -->
+  <path d="M52 18 L108 18 L108 118 C108 148 80 170 80 170 C80 170 52 148 52 118 Z" fill="rgba(255,255,255,0.08)" stroke="white" stroke-width="2"/>
+  <path d="M60 28 L100 28 L100 114 C100 138 80 156 80 156 C80 156 60 138 60 114 Z" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.55)" stroke-width="1.2"/>
+  <line x1="68" y1="62" x2="92" y2="62" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+  <line x1="68" y1="75" x2="92" y2="75" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+  <line x1="68" y1="88" x2="92" y2="88" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+  <circle cx="80" cy="44" r="7" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+  <!-- Divider -->
+  <line x1="128" y1="14" x2="128" y2="176" stroke="rgba(255,255,255,0.45)" stroke-width="1.8"/>
+  <!-- UTPL wordmark -->
+  <text x="148" y="112" fill="white" font-size="88" font-weight="700" font-family="Arial,Helvetica,sans-serif" letter-spacing="-1">UTPL</text>
+  <!-- Tagline -->
+  <text x="150" y="148" fill="rgba(255,255,255,0.82)" font-size="17.5" font-family="Arial,Helvetica,sans-serif" letter-spacing="0.3">La Universidad Católica de Loja</text>
+</svg>

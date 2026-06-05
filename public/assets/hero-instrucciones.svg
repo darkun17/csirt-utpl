@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 300" fill="none">
+  <!-- Card background -->
+  <rect x="0" y="0" width="420" height="300" rx="18" fill="#0d4f8c"/>
+  <!-- Top accent line -->
+  <rect x="24" y="22" width="36" height="4" rx="2" fill="#f2a900"/>
+  <!-- Title -->
+  <text x="24" y="60" fill="white" font-size="20" font-weight="700" font-family="Montserrat,sans-serif">Documentación CSIRT</text>
+  <!-- Subtitle -->
+  <text x="24" y="82" fill="rgba(255,255,255,0.65)" font-size="11" font-family="Roboto,sans-serif">Guías, manuales, normas y procedimientos del equipo</text>
+  <!-- Document card -->
+  <rect x="48" y="106" width="210" height="150" rx="10" fill="white" opacity="0.97"/>
+  <!-- Document header bar -->
+  <rect x="48" y="106" width="210" height="32" rx="10" fill="#004270"/>
+  <rect x="48" y="124" width="210" height="14" rx="0" fill="#004270"/>
+  <!-- Dots on header -->
+  <circle cx="66" cy="122" r="4" fill="rgba(255,255,255,0.4)"/>
+  <circle cx="80" cy="122" r="4" fill="rgba(255,255,255,0.4)"/>
+  <circle cx="94" cy="122" r="4" fill="rgba(255,255,255,0.4)"/>
+  <!-- Document title line -->
+  <rect x="64" y="152" width="130" height="8" rx="4" fill="#004270" opacity="0.8"/>
+  <!-- Text lines -->
+  <rect x="64" y="170" width="176" height="5" rx="2.5" fill="#e2e8f0"/>
+  <rect x="64" y="182" width="160" height="5" rx="2.5" fill="#e2e8f0"/>
+  <rect x="64" y="194" width="140" height="5" rx="2.5" fill="#e2e8f0"/>
+  <rect x="64" y="206" width="100" height="5" rx="2.5" fill="#e2e8f0"/>
+  <!-- Yellow button -->
+  <rect x="64" y="224" width="80" height="22" rx="11" fill="#f2a900"/>
+  <text x="104" y="239" fill="white" font-size="9" font-weight="600" font-family="Roboto,sans-serif" text-anchor="middle">Ver documento</text>
+  <!-- Shield watermark background -->
+  <path d="M310 80 L380 108 L380 188 C380 228 345 258 310 270 C275 258 240 228 240 188 L240 108 Z" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+  <path d="M310 100 L368 124 L368 184 C368 216 342 242 310 252 C278 242 252 216 252 184 L252 124 Z" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+  <!-- Bottom label -->
+  <text x="24" y="282" fill="rgba(255,255,255,0.55)" font-size="11" font-family="Roboto,sans-serif" font-weight="500" letter-spacing="1">CSIRT UTPL</text>
+</svg>

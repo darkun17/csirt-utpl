@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 300" fill="none">
+  <!-- Card background -->
+  <rect x="0" y="0" width="420" height="300" rx="18" fill="#0d4f8c"/>
+  <!-- Decorative circles -->
+  <circle cx="310" cy="110" r="90" fill="rgba(255,255,255,0.05)"/>
+  <circle cx="350" cy="160" r="60" fill="rgba(255,255,255,0.04)"/>
+  <!-- Top accent line -->
+  <rect x="24" y="22" width="36" height="4" rx="2" fill="#f2a900"/>
+  <!-- Title -->
+  <text x="24" y="60" fill="white" font-size="20" font-weight="700" font-family="Montserrat,sans-serif">Reportar incidente</text>
+  <!-- Subtitle -->
+  <text x="24" y="82" fill="rgba(255,255,255,0.65)" font-size="10.5" font-family="Roboto,sans-serif">Actúa rápido ante phishing, malware</text>
+  <text x="24" y="97" fill="rgba(255,255,255,0.65)" font-size="10.5" font-family="Roboto,sans-serif">o accesos no autorizados</text>
+  <!-- Background shield (ghost) -->
+  <path d="M300 80 L385 114 L385 194 C385 242 348 278 300 294 C252 278 215 242 215 194 L215 114 Z" fill="rgba(0,66,112,0.4)" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
+  <!-- Main shield -->
+  <path d="M300 108 L368 136 L368 200 C368 238 338 266 300 278 C262 266 232 238 232 200 L232 136 Z" fill="#f2a900"/>
+  <!-- Shield inner glow -->
+  <path d="M300 120 L356 144 L356 200 C356 230 330 254 300 264 C270 254 244 230 244 200 L244 144 Z" fill="#f2a900" opacity="0.7"/>
+  <!-- Checkmark -->
+  <path d="M268 190 L290 216 L338 166" stroke="#004270" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Bottom label -->
+  <text x="24" y="282" fill="rgba(255,255,255,0.55)" font-size="11" font-family="Roboto,sans-serif" font-weight="500" letter-spacing="1">CSIRT UTPL</text>
+</svg>

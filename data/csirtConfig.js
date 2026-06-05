@@ -1,0 +1,17 @@
+export const csirtConfig = {
+  name: 'CSIRT UTPL',
+  institution: 'Universidad Técnica Particular de Loja',
+  timezone: 'UTC-5',
+  email: 'csirt@utpl.edu.ec',
+  website: 'https://csirt.utpl.edu.ec',
+  reportUrl: '/reportar-incidente',
+  rfc2350Url: '/rfc2350',
+  pgpKeyUrl: '',
+  pgpFingerprint: '',
+  officeHours: 'Lunes a viernes, 8:00–13:00 y 15:00–18:00',
+  lastUpdated: '2026',
+  rfcVersion: '1.0',
+  whatsapp: 'https://wa.me/593999565400',
+  youtube: 'https://www.youtube.com/watch?v=FLuQ5B9Z7Uc&list=PLKiIhBZ1QsqrEPPUgdD325VQUa8_NgZ_g',
+  ofertaAcademica: 'https://utpl.edu.ec/oferta',
+};
