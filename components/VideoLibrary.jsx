@@ -1,6 +1,11 @@
-import { referenceVideos } from '../data/content';
+import { getReferenceVideos } from '../lib/drupal';
 
-export default function VideoLibrary() {
+export default async function VideoLibrary() {
+  const videos = await getReferenceVideos();
+
+  // Si el bloque está vacío en Drupal, se oculta automáticamente
+  if (!videos.length) return null;
+
   return (
     <section className="section videoSection">
       <div className="container">
@@ -12,8 +17,8 @@ export default function VideoLibrary() {
           <p>Recursos audiovisuales seleccionados para complementar noticias, manuales y campañas de concientización.</p>
         </div>
         <div className="videoGrid">
-          {referenceVideos.map((video) => (
-            <article className="videoCard" key={video.embedUrl}>
+          {videos.map((video) => (
+            <article className="videoCard" key={video.embedUrl ?? video.title}>
               <div className="videoEmbed">
                 <iframe
                   src={video.embedUrl}
@@ -26,7 +31,9 @@ export default function VideoLibrary() {
                 <span>{video.source}</span>
                 <h3>{video.title}</h3>
                 <p>{video.description}</p>
-                <a href={video.watchUrl} target="_blank" rel="noreferrer">Abrir en YouTube</a>
+                {video.watchUrl && (
+                  <a href={video.watchUrl} target="_blank" rel="noreferrer">Abrir en YouTube</a>
+                )}
               </div>
             </article>
           ))}

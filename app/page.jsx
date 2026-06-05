@@ -3,7 +3,15 @@ import Footer from '../components/Footer';
 import AlertCard from '../components/AlertCard';
 import VideoLibrary from '../components/VideoLibrary';
 import Link from 'next/link';
-import { alerts, contactEmail, learningTracks, services, visualGuides } from '../data/content';
+import { contactEmail } from '../data/content';
+import {
+  getAlerts,
+  getServices,
+  getLearningTracks,
+  getVisualGuides,
+} from '../lib/drupal';
+
+export const revalidate = 60;
 
 /* ── Lucide-style SVG icons (stroke, 22×22) ── */
 const BellIcon = () => (
@@ -95,7 +103,16 @@ const values = [
   'Mejora continua',
 ];
 
-export default function HomePage() {
+const ICONS_SVC = [ShieldIcon, BellIcon, GradCapIcon, TrendIcon];
+
+export default async function HomePage() {
+  const [latestAlerts, services, learningTracks, visualGuides] = await Promise.all([
+    getAlerts({ limit: 6 }),
+    getServices(),
+    getLearningTracks(),
+    getVisualGuides(),
+  ]);
+
   return (
     <>
       <Header />
@@ -157,7 +174,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="programCards">
-              {alerts.slice(0, 6).map((alert) => (
+              {latestAlerts.map((alert) => (
                 <AlertCard key={alert.slug} alert={alert} />
               ))}
             </div>
@@ -224,17 +241,12 @@ export default function HomePage() {
               <p className="svcDesc">Brindamos servicios especializados para fortalecer la seguridad de la información en la comunidad UTPL, promoviendo una cultura digital segura y resiliente.</p>
 
               <div className="svcCardGrid">
-                {[
-                  { svc: services[0], Icon: ShieldIcon },
-                  { svc: services[1], Icon: BellIcon   },
-                  { svc: services[2], Icon: GradCapIcon },
-                  { svc: services[3], Icon: TrendIcon   },
-                ].map(({ svc, Icon }) => (
-                  <article className="svcCard" key={svc.title}>
+                {ICONS_SVC.map((Icon, i) => services[i] && (
+                  <article className="svcCard" key={services[i].title}>
                     <div className="svcCardIcon"><Icon /></div>
-                    <h3 className="svcCardTitle">{svc.title}</h3>
+                    <h3 className="svcCardTitle">{services[i].title}</h3>
                     <div className="svcCardAccent" />
-                    <p>{svc.description}</p>
+                    <p>{services[i].description}</p>
                   </article>
                 ))}
               </div>

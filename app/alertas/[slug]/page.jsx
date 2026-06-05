@@ -1,26 +1,32 @@
 import Header from '../../../components/Header';
 import Footer from '../../../components/Footer';
 import { UsefulLinksBlock, ChecklistBlock } from '../../../components/AdminBlocks';
-import { alerts, contactEmail } from '../../../data/content';
+import { contactEmail } from '../../../data/content';
+import { getAlertBySlug, getAlertSlugs } from '../../../lib/drupal';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-export function generateStaticParams() {
-  return alerts.map((alert) => ({ slug: alert.slug }));
+// Permite slugs creados en Drupal después del build
+export const dynamicParams = true;
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const slugs = await getAlertSlugs();
+  return slugs.map(slug => ({ slug }));
 }
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const alert = alerts.find((item) => item.slug === slug);
+  const alert = await getAlertBySlug(slug);
   return {
     title: alert ? `${alert.title} | CSIRT UTPL` : 'Alerta | CSIRT UTPL',
-    description: alert?.summary
+    description: alert?.summary,
   };
 }
 
 export default async function AlertDetailPage({ params }) {
   const { slug } = await params;
-  const alert = alerts.find((item) => item.slug === slug);
+  const alert = await getAlertBySlug(slug);
   if (!alert) notFound();
 
   return (

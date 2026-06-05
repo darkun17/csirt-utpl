@@ -1,14 +1,21 @@
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import AlertsGrid from '../../components/AlertsGrid';
-import { alerts, editorialChannels } from '../../data/content';
+import { getAlerts, getEditorialChannels } from '../../lib/drupal';
+
+export const revalidate = 60;
 
 export const metadata = {
   title: 'Noticias y alertas | CSIRT UTPL',
   description: 'Archivo editorial de noticias, alertas, recomendaciones, manuales y novedades de seguridad de la información.'
 };
 
-export default function AlertsPage() {
+export default async function AlertsPage() {
+  const [alerts, editorialChannels] = await Promise.all([
+    getAlerts(),
+    getEditorialChannels(),
+  ]);
+
   return (
     <>
       <Header active="Alertas" />
