@@ -361,7 +361,7 @@ export default function ServiciosPage() {
                 Anticipamos riesgos, informamos a la comunidad y fortalecemos la cultura de
                 seguridad de manera continua.
               </p>
-              <div className="servicesGrid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+              <div className="servicesGrid servicesGrid--3col">
                 {proactiveServices.map(({ Icon, title, items, channel }) => (
                   <article className="serviceDetailCard" key={title}>
                     <div className="serviceIconCircle"><Icon /></div>
