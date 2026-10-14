@@ -22,8 +22,7 @@ export default function ReportPage() {
               <h1>Reporta novedades de seguridad</h1>
               <p>Completa el formulario o escribe directamente a <strong style={{ color: '#FFE7A3' }}>{contactEmail}</strong>. Incluye toda la evidencia disponible.</p>
               <div className="heroActions">
-                <a className="btnPrimary" href="#formulario">Ir al formulario</a>
-                <a className="btnGhostLight" href={`mailto:${contactEmail}`}>Escribir al CSIRT</a>
+                <a className="btnPrimary" href={`mailto:${contactEmail}`}>Escribir al CSIRT</a>
               </div>
             </div>
 

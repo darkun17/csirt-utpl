@@ -2,6 +2,9 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import SeverityMatrix from '../../components/SeverityMatrix';
 import ReportIncidentCTA from '../../components/ReportIncidentCTA';
+import EditButton from '../../components/EditButton';
+import { isEditor } from '../../lib/auth';
+import { getPageBlock, getPageItems } from '../../lib/drupal';
 import Link from 'next/link';
 
 export const metadata = {
@@ -190,7 +193,34 @@ const limitations = [
   { text: 'Soporte técnico directo a dispositivos personales no institucionales',           Icon: LaptopIcon  },
 ];
 
-export default function ServiciosPage() {
+export const revalidate = 60;
+
+export default async function ServiciosPage() {
+  const [
+    editor, heroBlock, misionBlock, drupalReactive, drupalProactive, drupalLimitaciones,
+    reactivosBlock, proactivosBlock, limitacionesBlock,
+    resumenBlock, tablaResumen, severidadBlock, severidadItems, ctaBlock, ctaBotones,
+  ] = await Promise.all([
+    isEditor(),
+    getPageBlock('servicios', 'hero'),
+    getPageBlock('servicios', 'mision'),
+    getPageItems('servicios', 'reactivos'),
+    getPageItems('servicios', 'proactivos'),
+    getPageItems('servicios', 'limitaciones'),
+    getPageBlock('servicios', 'reactivos'),
+    getPageBlock('servicios', 'proactivos'),
+    getPageBlock('servicios', 'limitaciones'),
+    getPageBlock('servicios', 'resumen'),
+    getPageItems('servicios', 'tabla-resumen'),
+    getPageBlock('servicios', 'severidad'),
+    getPageItems('servicios', 'severidad'),
+    getPageBlock('servicios', 'cta'),
+    getPageItems('servicios', 'cta-botones'),
+  ]);
+
+  const tableRows = tablaResumen.length
+    ? tablaResumen.map((i) => ({ service: i.title, type: i.kicker, audience: i.description, channel: i.channel, result: i.source && i.source !== 'YouTube' ? i.source : '' }))
+    : servicesTableRows;
   return (
     <>
       <Header active="Servicios" />
@@ -198,20 +228,19 @@ export default function ServiciosPage() {
 
         {/* ── Hero ── */}
         <section className="richPageHero richHero--servicios">
+          {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="Hero servicios" />}
           <div className="richPageHeroBg" />
           <div className="richHeroAccentLine" />
           <div className="container richHeroGrid">
             <div className="richHeroCopy">
-              <span className="eyebrow">CSIRT UTPL</span>
-              <h1>Servicios del CSIRT UTPL</h1>
-              <p>
-                El CSIRT UTPL presta servicios reactivos y proactivos para proteger la seguridad
-                de la información en toda la comunidad universitaria. Conoce cómo podemos apoyarte
-                ante un incidente o para fortalecer tu cultura digital.
-              </p>
+              <span className="eyebrow">{heroBlock?.kicker || 'CSIRT UTPL'}</span>
+              <h1>{heroBlock?.titulo || 'Servicios del CSIRT UTPL'}</h1>
+              {heroBlock?.cuerpo
+                ? <div dangerouslySetInnerHTML={{ __html: heroBlock.cuerpo }} />
+                : <p>El CSIRT UTPL presta servicios reactivos y proactivos para proteger la seguridad de la información en toda la comunidad universitaria. Conoce cómo podemos apoyarte ante un incidente o para fortalecer tu cultura digital.</p>
+              }
               <div className="heroActions">
                 <Link className="btnPrimary" href="/reportar-incidente">Reportar incidente</Link>
-                <Link className="btnGhostLight" href="/rfc2350">Consultar RFC 2350</Link>
               </div>
             </div>
 
@@ -279,6 +308,7 @@ export default function ServiciosPage() {
 
         {/* ── Intro / Misión ── */}
         <section className="section whiteSection">
+          {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="Misión / intro" />}
           <div className="container">
             <div className="misionLayout">
 
@@ -313,17 +343,13 @@ export default function ServiciosPage() {
                 <div className="misionContent">
                   <div className="misionEyebrow">
                     <span className="misionEyebrowLine" />
-                    <span>Nuestra misión</span>
+                    <span>{misionBlock?.kicker || 'Nuestra misión'}</span>
                   </div>
-                  <h2>Cómo apoyamos a la comunidad universitaria</h2>
-                  <p>
-                    El CSIRT UTPL actúa como punto único de contacto para la atención, prevención y respuesta
-                    a incidentes de seguridad de la información. Ofrecemos orientación técnica, publicamos
-                    alertas oportunas y desarrollamos iniciativas educativas para que estudiantes, docentes
-                    y personal administrativo tomen decisiones digitales más seguras. Nuestra labor
-                    complementa la gestión institucional de TI sin reemplazar el rol de soporte técnico
-                    directo.
-                  </p>
+                  <h2>{misionBlock?.titulo || 'Cómo apoyamos a la comunidad universitaria'}</h2>
+                  {misionBlock?.cuerpo
+                    ? <div dangerouslySetInnerHTML={{ __html: misionBlock.cuerpo }} />
+                    : <p>El CSIRT UTPL actúa como punto único de contacto para la atención, prevención y respuesta a incidentes de seguridad de la información. Ofrecemos orientación técnica, publicamos alertas oportunas y desarrollamos iniciativas educativas para que estudiantes, docentes y personal administrativo tomen decisiones digitales más seguras. Nuestra labor complementa la gestión institucional de TI sin reemplazar el rol de soporte técnico directo.</p>
+                  }
                 </div>
 
             </div>
@@ -332,47 +358,60 @@ export default function ServiciosPage() {
 
         {/* ── Servicios reactivos ── */}
         <section className="section">
+          {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="Servicios reactivos y proactivos" />}
           <div className="container">
             <div className="servicesGroup">
-              <h2 className="servicesGroupTitle">Servicios reactivos</h2>
-              <p className="servicesGroupSubtitle">
-                Respondemos a incidentes reportados por la comunidad UTPL con análisis, orientación
-                y coordinación.
-              </p>
+              <h2 className="servicesGroupTitle">{reactivosBlock?.titulo || 'Servicios reactivos'}</h2>
+              {reactivosBlock?.cuerpo
+                ? <div className="servicesGroupSubtitle" dangerouslySetInnerHTML={{ __html: reactivosBlock.cuerpo }} />
+                : <p className="servicesGroupSubtitle">
+                    Respondemos a incidentes reportados por la comunidad UTPL con análisis, orientación
+                    y coordinación.
+                  </p>
+              }
               <div className="servicesGrid">
-                {reactiveServices.map(({ Icon, title, items, channel }) => (
-                  <article className="serviceDetailCard" key={title}>
-                    <div className="serviceIconCircle"><Icon /></div>
-                    <h3>{title}</h3>
-                    <div className="cardAccent" />
-                    <ul>
-                      {items.map((item) => <li key={item}>{item}</li>)}
-                    </ul>
-                    <span className="serviceChannel">Canal: {channel}</span>
-                  </article>
-                ))}
+                {(drupalReactive.length ? drupalReactive : reactiveServices).map((svc, i) => {
+                  const Icon = [ShieldIcon, SearchIcon, AnalyzeIcon, CoordinateIcon][i] ?? ShieldIcon;
+                  const listItems = svc.items ?? (svc.description ?? '').split('\n').filter(Boolean);
+                  const channel   = svc.channel ?? svc.canal ?? '';
+                  return (
+                    <article className="serviceDetailCard" key={svc.title}>
+                      <div className="serviceIconCircle"><Icon /></div>
+                      <h3>{svc.title}</h3>
+                      <div className="cardAccent" />
+                      <ul>{listItems.map((item) => <li key={item}>{item}</li>)}</ul>
+                      {channel && <span className="serviceChannel">Canal: {channel}</span>}
+                    </article>
+                  );
+                })}
               </div>
             </div>
 
             {/* ── Servicios proactivos ── */}
             <div className="servicesGroup">
-              <h2 className="servicesGroupTitle">Servicios proactivos</h2>
-              <p className="servicesGroupSubtitle">
-                Anticipamos riesgos, informamos a la comunidad y fortalecemos la cultura de
-                seguridad de manera continua.
-              </p>
+              <h2 className="servicesGroupTitle">{proactivosBlock?.titulo || 'Servicios proactivos'}</h2>
+              {proactivosBlock?.cuerpo
+                ? <div className="servicesGroupSubtitle" dangerouslySetInnerHTML={{ __html: proactivosBlock.cuerpo }} />
+                : <p className="servicesGroupSubtitle">
+                    Anticipamos riesgos, informamos a la comunidad y fortalecemos la cultura de
+                    seguridad de manera continua.
+                  </p>
+              }
               <div className="servicesGrid servicesGrid--3col">
-                {proactiveServices.map(({ Icon, title, items, channel }) => (
-                  <article className="serviceDetailCard" key={title}>
-                    <div className="serviceIconCircle"><Icon /></div>
-                    <h3>{title}</h3>
-                    <div className="cardAccent" />
-                    <ul>
-                      {items.map((item) => <li key={item}>{item}</li>)}
-                    </ul>
-                    <span className="serviceChannel">Canal: {channel}</span>
-                  </article>
-                ))}
+                {(drupalProactive.length ? drupalProactive : proactiveServices).map((svc, i) => {
+                  const Icon = [BellIcon, VulnIcon, GradCapIcon, TrainIcon, TrendIcon][i] ?? BellIcon;
+                  const listItems = svc.items ?? (svc.description ?? '').split('\n').filter(Boolean);
+                  const channel   = svc.channel ?? svc.canal ?? '';
+                  return (
+                    <article className="serviceDetailCard" key={svc.title}>
+                      <div className="serviceIconCircle"><Icon /></div>
+                      <h3>{svc.title}</h3>
+                      <div className="cardAccent" />
+                      <ul>{listItems.map((item) => <li key={item}>{item}</li>)}</ul>
+                      {channel && <span className="serviceChannel">Canal: {channel}</span>}
+                    </article>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -380,11 +419,16 @@ export default function ServiciosPage() {
 
         {/* ── Tabla de servicios ── */}
         <section className="section whiteSection">
+          {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="Resumen de servicios — texto" />}
+          {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="Resumen de servicios — filas de la tabla" pos="tl" />}
           <div className="container">
-            <h2 style={{ color: 'var(--color-primary)', marginBottom: 8 }}>Resumen de servicios</h2>
-            <p style={{ color: 'var(--color-text-muted)', fontSize: '11.2pt', marginBottom: 16 }}>
-              Visión consolidada de los servicios, su tipo, audiencia, canal de acceso y resultado esperado.
-            </p>
+            <h2 style={{ color: 'var(--color-primary)', marginBottom: 8 }}>{resumenBlock?.titulo || 'Resumen de servicios'}</h2>
+            {resumenBlock?.cuerpo
+              ? <div style={{ color: 'var(--color-text-muted)', fontSize: '11.2pt', marginBottom: 16 }} dangerouslySetInnerHTML={{ __html: resumenBlock.cuerpo }} />
+              : <p style={{ color: 'var(--color-text-muted)', fontSize: '11.2pt', marginBottom: 16 }}>
+                  Visión consolidada de los servicios, su tipo, audiencia, canal de acceso y resultado esperado.
+                </p>
+            }
             <div style={{ overflowX: 'auto' }}>
               <table className="servicesTable">
                 <thead>
@@ -397,7 +441,7 @@ export default function ServiciosPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {servicesTableRows.map((row) => (
+                  {tableRows.map((row) => (
                     <tr key={row.service}>
                       <td>{row.service}</td>
                       <td>{row.type}</td>
@@ -414,6 +458,8 @@ export default function ServiciosPage() {
 
         {/* ── Alcance y limitaciones ── */}
         <section className="section">
+          {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="Limitaciones — tarjetas" />}
+          {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="Alcance y limitaciones — texto" pos="br" />}
           <div className="container">
 
             <div className="limitationsHeader">
@@ -426,23 +472,30 @@ export default function ServiciosPage() {
               </div>
               <div className="limitationsHeaderRule" />
               <div className="limitationsHeaderText">
-                <h2>Alcance y limitaciones</h2>
-                <p>
-                  El CSIRT UTPL atiende incidentes y vulnerabilidades que afecten a sistemas,
-                  servicios, redes o información de la Universidad Técnica Particular de Loja.
-                  Las siguientes actividades están fuera del alcance operativo del equipo:
-                </p>
+                <h2>{limitacionesBlock?.titulo || 'Alcance y limitaciones'}</h2>
+                {limitacionesBlock?.cuerpo
+                  ? <div dangerouslySetInnerHTML={{ __html: limitacionesBlock.cuerpo }} />
+                  : <p>
+                      El CSIRT UTPL atiende incidentes y vulnerabilidades que afecten a sistemas,
+                      servicios, redes o información de la Universidad Técnica Particular de Loja.
+                      Las siguientes actividades están fuera del alcance operativo del equipo:
+                    </p>
+                }
               </div>
             </div>
 
             <div className="limitationsCards">
-              {limitations.map(({ text, Icon }) => (
-                <div className="limitationCard" key={text}>
-                  <div className="limitationCardIcon"><Icon /></div>
-                  <div className="limitationCardSep" aria-hidden="true" />
-                  <p>{text}</p>
-                </div>
-              ))}
+              {(drupalLimitaciones.length ? drupalLimitaciones : limitations).map((item, i) => {
+                const Icon = item.Icon ?? [ScalesIcon, ShieldIcon, ClockIcon, GlobeIcon, SearchIcon, LaptopIcon][i] ?? ShieldIcon;
+                const text = item.text || item.title || item.description || '';
+                return (
+                  <div className="limitationCard" key={text}>
+                    <div className="limitationCardIcon"><Icon /></div>
+                    <div className="limitationCardSep" aria-hidden="true" />
+                    <p>{text}</p>
+                  </div>
+                );
+              })}
             </div>
 
           </div>
@@ -450,17 +503,29 @@ export default function ServiciosPage() {
 
         {/* ── Tabla de severidad ── */}
         <section className="section whiteSection">
+          {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="Clasificación de severidad — texto" />}
+          {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="Clasificación de severidad — niveles" pos="tl" />}
           <div className="container">
-            <h2 style={{ color: 'var(--color-primary)', marginBottom: 8 }}>Clasificación de severidad</h2>
-            <p style={{ color: 'var(--color-text-muted)', fontSize: '11.2pt', marginBottom: 24 }}>
-              Cada incidente recibe una prioridad según su impacto potencial. Esto determina el
-              tiempo de respuesta objetivo del equipo.
-            </p>
-            <SeverityMatrix />
+            <h2 style={{ color: 'var(--color-primary)', marginBottom: 8 }}>{severidadBlock?.titulo || 'Clasificación de severidad'}</h2>
+            {severidadBlock?.cuerpo
+              ? <div style={{ color: 'var(--color-text-muted)', fontSize: '11.2pt', marginBottom: 24 }} dangerouslySetInnerHTML={{ __html: severidadBlock.cuerpo }} />
+              : <p style={{ color: 'var(--color-text-muted)', fontSize: '11.2pt', marginBottom: 24 }}>
+                  Cada incidente recibe una prioridad según su impacto potencial. Esto determina el
+                  tiempo de respuesta objetivo del equipo.
+                </p>
+            }
+            <SeverityMatrix items={severidadItems} />
           </div>
         </section>
 
-        <ReportIncidentCTA />
+        <ReportIncidentCTA
+          editor={editor}
+          editHref="/admin/content/block?type=bloque_pagina"
+          title={ctaBlock?.titulo || undefined}
+          descriptionHtml={ctaBlock?.cuerpo || undefined}
+          botones={ctaBotones.map(i => ({ title: i.title, href: i.href }))}
+          note={ctaBlock?.kicker || undefined}
+        />
 
       </main>
       <Footer />

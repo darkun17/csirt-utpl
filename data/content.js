@@ -5,7 +5,6 @@ export const navItems = [
   { label: 'Alertas',          href: '/alertas' },
   { label: 'Aprende',          href: '/recursos' },
   { label: 'Servicios',        href: '/servicios' },
-  { label: 'RFC 2350',         href: '/rfc2350' },
   { label: 'Vulnerabilidades', href: '/vulnerabilidades' },
   { label: 'Contacto',         href: '/contacto' },
 ];
@@ -198,12 +197,11 @@ export const services = [
 ];
 
 export const resources = [
-  { title: 'Norma RFC2350', type: 'Documento formal', description: 'Identidad, comunidad atendida, servicios, políticas y procedimientos del CSIRT UTPL.', href: '/rfc2350' },
-  { title: 'Guía contra phishing', type: 'Guía', description: 'Cómo identificar remitentes falsos, enlaces sospechosos y mensajes diseñados para robar credenciales.', href: '/recursos#phishing' },
-  { title: 'Manual de contraseñas seguras', type: 'Manual', description: 'Buenas prácticas para claves, gestores, autenticación multifactor y recuperación de cuentas.', href: '/alertas/como-crear-contrasenas-seguras' },
-  { title: 'Mailing de alertas', type: 'Suscripción', description: 'Canal informativo para recibir recomendaciones, boletines y alertas de seguridad institucional.', href: `mailto:${contactEmail}?subject=Solicitud%20de%20suscripcion%20a%20alertas%20CSIRT` },
-  { title: 'Eventos internos y externos', type: 'Capacitación', description: 'Charlas, talleres y actividades de sensibilización sobre seguridad de la información.', href: '/recursos#eventos' },
-  { title: 'Proyectos de seguridad', type: 'Investigación', description: 'Iniciativas técnicas y académicas que fortalecen la seguridad digital de la UTPL.', href: '/recursos#proyectos' }
+  { title: 'Guía contra phishing', type: 'Guía', description: 'Cómo identificar remitentes falsos, enlaces sospechosos y mensajes diseñados para robar credenciales.', comingSoon: true },
+  { title: 'Manual de contraseñas seguras', type: 'Manual', description: 'Buenas prácticas para claves, gestores, autenticación multifactor y recuperación de cuentas.', href: 'https://utpl.sharepoint.com/:b:/g/OPE/EcPlxDl_HIdClH7JG2EjPgkBZ2-eJiWGeKTjGn-lnSnKew?e=9ol377', external: true },
+  { title: 'Mailing de alertas', type: 'Suscripción', description: 'Canal informativo para recibir recomendaciones, boletines y alertas de seguridad institucional.', comingSoon: true },
+  { title: 'Eventos internos y externos', type: 'Capacitación', description: 'Charlas, talleres y actividades de sensibilización sobre seguridad de la información.', comingSoon: true },
+  { title: 'Proyectos de seguridad', type: 'Investigación', description: 'Iniciativas técnicas y académicas que fortalecen la seguridad digital de la UTPL.', comingSoon: true }
 ];
 
 export const reportTypes = [

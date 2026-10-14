@@ -1,20 +1,31 @@
 import { getReferenceVideos } from '../lib/drupal';
+import EditButton from './EditButton';
 
-export default async function VideoLibrary() {
+export default async function VideoLibrary({ editor = false, block = null }) {
   const videos = await getReferenceVideos();
 
-  // Si el bloque está vacío en Drupal, se oculta automáticamente
-  if (!videos.length) return null;
+  if (!videos.length) {
+    if (!editor) return null;
+    return (
+      <section className="section videoSection" style={{ position: 'relative', minHeight: 80 }}>
+      </section>
+    );
+  }
 
   return (
-    <section className="section videoSection">
+    <section className="section videoSection" style={{ position: 'relative' }}>
+      {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="Videos — texto" />}
+      {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="Videos — gestionar" pos="tl" />}
       <div className="container">
         <div className="sectionHead compact">
           <div>
-            <span className="eyebrow dark">Videos de apoyo</span>
-            <h2>Aprendizaje visual para reforzar buenas prácticas</h2>
+            <span className="eyebrow dark">{block?.kicker || 'Videos de apoyo'}</span>
+            <h2>{block?.titulo || 'Aprendizaje visual para reforzar buenas prácticas'}</h2>
           </div>
-          <p>Recursos audiovisuales seleccionados para complementar noticias, manuales y campañas de concientización.</p>
+          {block?.cuerpo
+            ? <div dangerouslySetInnerHTML={{ __html: block.cuerpo }} />
+            : <p>Recursos audiovisuales seleccionados para complementar noticias, manuales y campañas de concientización.</p>
+          }
         </div>
         <div className="videoGrid">
           {videos.map((video) => (

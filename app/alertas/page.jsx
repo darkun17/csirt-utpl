@@ -1,7 +1,9 @@
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import AlertsGrid from '../../components/AlertsGrid';
-import { getAlerts, getEditorialChannels } from '../../lib/drupal';
+import EditButton from '../../components/EditButton';
+import { getAlerts, getEditorialChannels, getPageBlock } from '../../lib/drupal';
+import { isEditor } from '../../lib/auth';
 
 export const revalidate = 60;
 
@@ -11,9 +13,11 @@ export const metadata = {
 };
 
 export default async function AlertsPage() {
-  const [alerts, editorialChannels] = await Promise.all([
+  const [editor, alerts, editorialChannels, heroBlock] = await Promise.all([
+    isEditor(),
     getAlerts(),
     getEditorialChannels(),
+    getPageBlock('alertas', 'hero'),
   ]);
 
   return (
@@ -23,13 +27,17 @@ export default async function AlertsPage() {
 
         {/* ── Hero banner ── */}
         <section className="richPageHero richHero--alerts">
+          {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="Hero alertas" />}
           <div className="richPageHeroBg" />
           <div className="richHeroAccentLine" />
           <div className="container richHeroGrid">
             <div className="richHeroCopy">
-              <span className="eyebrow">Noticias CSIRT UTPL</span>
-              <h1>Actualidad, alertas y aprendizaje en seguridad digital</h1>
-              <p>Un archivo editorial para capacitar a la comunidad universitaria con información oportuna, clara y accionable.</p>
+              <span className="eyebrow">{heroBlock?.kicker || 'Noticias CSIRT UTPL'}</span>
+              <h1>{heroBlock?.titulo || 'Actualidad, alertas y aprendizaje en seguridad digital'}</h1>
+              {heroBlock?.cuerpo
+                ? <div dangerouslySetInnerHTML={{ __html: heroBlock.cuerpo }} />
+                : <p>Un archivo editorial para capacitar a la comunidad universitaria con información oportuna, clara y accionable.</p>
+              }
               <div className="heroActions">
                 <a className="btnPrimary" href="#alertas">Ver publicaciones</a>
                 <a className="btnGhostLight" href="/reportar-incidente">Reportar incidente</a>
@@ -92,7 +100,11 @@ export default async function AlertsPage() {
         </section>
 
         {/* ── Interactive grid (client component) ── */}
-        <AlertsGrid alerts={alerts} />
+        <section className="section">
+          {editor && <EditButton href="/node/add/alerta" label="+ Nueva alerta" pos="tl" />}
+          {editor && <EditButton href="/admin/content?type=alerta" label="Gestionar alertas" />}
+          <AlertsGrid alerts={alerts} />
+        </section>
 
       </main>
       <Footer />

@@ -1,8 +1,11 @@
 import Link from 'next/link';
-import { resources } from '../data/content';
+import { getResources } from '../lib/drupal';
 
-export default function ResourceGrid({ limit }) {
-  const items = limit ? resources.slice(0, limit) : resources;
+export default async function ResourceGrid({ limit }) {
+  const all   = await getResources();
+  const items = limit ? all.slice(0, limit) : all;
+
+  if (!items.length) return null;
 
   return (
     <div className="resourceGrid">
@@ -11,7 +14,13 @@ export default function ResourceGrid({ limit }) {
           <span>{item.type}</span>
           <h3>{item.title}</h3>
           <p>{item.description}</p>
-          <Link href={item.href}>Abrir recurso</Link>
+          {(item.comingSoon || !item.href || item.href === '#') ? (
+            <span className="resourceComingSoon">Próximamente</span>
+          ) : (item.external || item.href.startsWith('http')) ? (
+            <a href={item.href} target="_blank" rel="noopener noreferrer">Abrir recurso</a>
+          ) : (
+            <Link href={item.href}>Abrir recurso</Link>
+          )}
         </article>
       ))}
     </div>

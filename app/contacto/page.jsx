@@ -1,15 +1,20 @@
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import ReportIncidentCTA from '../../components/ReportIncidentCTA';
+import EditButton from '../../components/EditButton';
 import Link from 'next/link';
 import { csirtConfig } from '../../data/csirtConfig';
+import { isEditor } from '../../lib/auth';
+import { getPageBlock, getPageItems } from '../../lib/drupal';
+
+export const revalidate = 60;
 
 export const metadata = {
   title: 'Contacto | CSIRT UTPL',
   description: 'Canales oficiales para comunicarse con el CSIRT UTPL.',
 };
 
-/* ── Inline SVG icons ── */
+/* ── Inline SVG icons (fijos por posición, igual que el resto del sitio) ── */
 const MailIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
     fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -37,16 +42,34 @@ const GlobeIcon = () => (
   </svg>
 );
 
-const KeyIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-    fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <circle cx="7.5" cy="15.5" r="5.5"/>
-    <path d="m21 2-9.6 9.6"/>
-    <path d="m15.5 7.5 3 3L22 7l-3-3"/>
-  </svg>
-);
+const channelIcons = [MailIcon, FormIcon, GlobeIcon];
 
-export default function ContactoPage() {
+const channelsFallback = [
+  { title: 'Correo CSIRT', description: 'Canal oficial para reportar incidentes, consultar sobre seguridad o solicitar información institucional.', href: `mailto:${csirtConfig.email}`, btnLabel: 'Escribir correo', showEmail: true },
+  { title: 'Formulario de reporte', description: 'Usa el formulario estructurado para describir incidentes con la información requerida por el equipo.', href: '/reportar-incidente', btnLabel: 'Reportar incidente' },
+  { title: 'Sitio web CSIRT', description: 'Consulta publicaciones, alertas, manuales y recursos de seguridad disponibles para la comunidad.', href: '/alertas', btnLabel: 'Ver publicaciones' },
+];
+
+export default async function ContactoPage() {
+  const [editor, heroBlock, canalesIntroBlock, ctaBlock, canalItems, ctaBotones] = await Promise.all([
+    isEditor(),
+    getPageBlock('contacto', 'hero'),
+    getPageBlock('contacto', 'canales'),
+    getPageBlock('contacto', 'cta'),
+    getPageItems('contacto', 'canales'),
+    getPageItems('contacto', 'cta-botones'),
+  ]);
+
+  const channels = canalItems.length
+    ? canalItems.map((i, idx) => ({
+        title: i.title,
+        description: i.description,
+        href: i.href || channelsFallback[idx]?.href || '/',
+        btnLabel: channelsFallback[idx]?.btnLabel || 'Ver más',
+        showEmail: idx === 0,
+      }))
+    : channelsFallback;
+
   return (
     <>
       <Header active="Contacto" />
@@ -54,16 +77,20 @@ export default function ContactoPage() {
 
         {/* ── Hero ── */}
         <section className="richPageHero richHero--contacto">
+          {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="Hero contacto" />}
           <div className="richPageHeroBg" />
           <div className="richHeroAccentLine" />
           <div className="container richHeroGrid">
             <div className="richHeroCopy">
-              <span className="eyebrow">CSIRT UTPL</span>
-              <h1>Contacto</h1>
-              <p>
-                Canales oficiales para comunicarse con el equipo de Respuesta a Incidentes de
-                Seguridad de la Universidad Técnica Particular de Loja.
-              </p>
+              <span className="eyebrow">{heroBlock?.kicker || 'CSIRT UTPL'}</span>
+              <h1>{heroBlock?.titulo || 'Contacto'}</h1>
+              {heroBlock?.cuerpo
+                ? <div dangerouslySetInnerHTML={{ __html: heroBlock.cuerpo }} />
+                : <p>
+                    Canales oficiales para comunicarse con el equipo de Respuesta a Incidentes de
+                    Seguridad de la Universidad Técnica Particular de Loja.
+                  </p>
+              }
               <div className="heroActions">
                 <a className="btnPrimary" href={`mailto:${csirtConfig.email}`}>Escribir correo</a>
                 <Link className="btnGhostLight" href="/reportar-incidente">Reportar incidente</Link>
@@ -134,176 +161,44 @@ export default function ContactoPage() {
 
         {/* ── Canales oficiales ── */}
         <section className="section whiteSection">
+          {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="Canales oficiales" />}
           <div className="container">
-            <span className="eyebrow dark">Comunicación oficial</span>
-            <h2 style={{ marginBottom: 28 }}>Canales oficiales</h2>
+            <span className="eyebrow dark">{canalesIntroBlock?.kicker || 'Comunicación oficial'}</span>
+            <h2 style={{ marginBottom: 28 }}>{canalesIntroBlock?.titulo || 'Canales oficiales'}</h2>
             <div className="contactChannelsGrid">
-
-              {/* Correo */}
-              <article className="contactCard">
-                <div className="contactCardIcon"><MailIcon /></div>
-                <h3>Correo CSIRT</h3>
-                <p>Canal oficial para reportar incidentes, consultar sobre seguridad o solicitar información institucional.</p>
-                <a
-                  href={`mailto:${csirtConfig.email}`}
-                  className="btnPrimary"
-                  style={{ display: 'inline-block', fontSize: '11pt' }}
-                >
-                  Escribir correo
-                </a>
-                <p style={{ marginTop: 12, fontSize: '10.5pt', color: 'var(--color-text-muted)' }}>
-                  {csirtConfig.email}
-                </p>
-              </article>
-
-              {/* Formulario */}
-              <article className="contactCard">
-                <div className="contactCardIcon"><FormIcon /></div>
-                <h3>Formulario de reporte</h3>
-                <p>Usa el formulario estructurado para describir incidentes con la información requerida por el equipo.</p>
-                <Link href="/reportar-incidente" className="btnPrimary" style={{ fontSize: '11pt' }}>
-                  Reportar incidente
-                </Link>
-              </article>
-
-              {/* Sitio web */}
-              <article className="contactCard">
-                <div className="contactCardIcon"><GlobeIcon /></div>
-                <h3>Sitio web CSIRT</h3>
-                <p>Consulta publicaciones, alertas, manuales y recursos de seguridad disponibles para la comunidad.</p>
-                <Link href="/alertas" className="btnPrimary" style={{ fontSize: '11pt' }}>
-                  Ver publicaciones
-                </Link>
-              </article>
-
+              {channels.map((channel, idx) => {
+                const Icon = channelIcons[idx % channelIcons.length];
+                const isExternalEmail = channel.href?.startsWith('mailto:');
+                const ButtonTag = isExternalEmail ? 'a' : Link;
+                const buttonProps = isExternalEmail ? { href: channel.href } : { href: channel.href };
+                return (
+                  <article className="contactCard" key={channel.title}>
+                    <div className="contactCardIcon"><Icon /></div>
+                    <h3>{channel.title}</h3>
+                    <p>{channel.description}</p>
+                    <ButtonTag {...buttonProps} className="btnPrimary" style={{ display: 'inline-block', fontSize: '11pt' }}>
+                      {channel.btnLabel}
+                    </ButtonTag>
+                    {channel.showEmail && (
+                      <p style={{ marginTop: 12, fontSize: '10.5pt', color: 'var(--color-text-muted)' }}>
+                        {csirtConfig.email}
+                      </p>
+                    )}
+                  </article>
+                );
+              })}
             </div>
           </div>
         </section>
 
-        {/* ── Horario de atención ── */}
-        <section className="section">
-          <div className="container">
-
-            <div className="contactSectionHead">
-              <div className="contactSectionIcon">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-                </svg>
-              </div>
-              <div className="contactSectionAccent" />
-              <div>
-                <h2>Horario de atención</h2>
-                <p>El CSIRT UTPL atiende reportes e incidentes durante el horario hábil institucional:</p>
-              </div>
-            </div>
-
-            {/* Schedule card */}
-            <div className="scheduleCard">
-              <div className="scheduleCardIcon">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-                </svg>
-              </div>
-              <div>
-                <strong className="scheduleCardTime">{csirtConfig.officeHours}</strong>
-                <p className="scheduleCardTz">Zona horaria {csirtConfig.timezone} (Ecuador continental)</p>
-              </div>
-            </div>
-
-            {/* Bullet note */}
-            <div className="scheduleBullet">
-              <span className="scheduleBulletDot" aria-hidden="true" />
-              <p>Los reportes recibidos fuera de este horario serán atendidos en el siguiente día hábil.</p>
-            </div>
-
-            {/* Urgent warning */}
-            <div className="scheduleUrgent">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
-              </svg>
-              <p>
-                Para incidentes críticos activos, incluye en el asunto del correo la palabra{' '}
-                <strong className="scheduleUrgentWord">URGENTE</strong>{' '}
-                para ayudar a priorizar la atención.
-              </p>
-            </div>
-
-          </div>
-        </section>
-
-        {/* ── Comunicación segura (PGP) ── */}
-        <section className="section whiteSection">
-          <div className="container">
-
-            <div className="contactSectionHead">
-              <div className="contactSectionIcon contactSectionIcon--dark">
-                <KeyIcon />
-              </div>
-              <div className="contactSectionAccent" />
-              <div>
-                <h2>Comunicación segura (PGP)</h2>
-                <p>
-                  Para comunicaciones sensibles que requieran mayor privacidad, el CSIRT UTPL
-                  publicará su clave PGP pública. Podrás usarla para cifrar el contenido de tus
-                  mensajes antes de enviarlo por correo electrónico, garantizando que solo el
-                  equipo pueda leer tu reporte.
-                </p>
-              </div>
-            </div>
-
-            {/* PGP data card */}
-            <div className="pgpDataCard">
-              <div className="pgpDataRow">
-                <div className="pgpDataIcon">
-                  <KeyIcon />
-                </div>
-                <span className="pgpDataLabel">Clave PGP</span>
-                <span className="pgpPendingBadge">Pendiente de publicación</span>
-                <button className="pgpActionBtn" disabled aria-label="Copiar clave PGP">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                  </svg>
-                  Copiar
-                </button>
-              </div>
-              <div className="pgpDataDivider" />
-              <div className="pgpDataRow">
-                <div className="pgpDataIcon">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/>
-                  </svg>
-                </div>
-                <span className="pgpDataLabel">Fingerprint</span>
-                <span className="pgpPendingBadge">Pendiente de publicación</span>
-                <button className="pgpActionBtn" disabled aria-label="Descargar fingerprint">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                  </svg>
-                  Descargar
-                </button>
-              </div>
-            </div>
-
-            {/* Info note */}
-            <div className="pgpInfoNote">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-              </svg>
-              <div className="pgpInfoNoteSep" />
-              <div>
-                <p>Mientras la clave no esté disponible, utiliza el correo institucional para comunicaciones ordinarias.</p>
-                <p>Evita incluir contraseñas, tokens o información altamente sensible en correos sin cifrar.</p>
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-        <ReportIncidentCTA />
+        <ReportIncidentCTA
+          editor={editor}
+          editHref="/admin/content/block?type=bloque_pagina"
+          title={ctaBlock?.titulo || undefined}
+          descriptionHtml={ctaBlock?.cuerpo || undefined}
+          botones={ctaBotones.map(i => ({ title: i.title, href: i.href }))}
+          note={ctaBlock?.kicker || undefined}
+        />
 
       </main>
       <Footer />

@@ -1,8 +1,10 @@
 import Header from '../../../components/Header';
 import Footer from '../../../components/Footer';
-import { UsefulLinksBlock, ChecklistBlock } from '../../../components/AdminBlocks';
+import EditButton from '../../../components/EditButton';
+import { UsefulLinksBlock, ChecklistBlock, RecentAlertsBlock } from '../../../components/AdminBlocks';
 import { contactEmail } from '../../../data/content';
-import { getAlertBySlug, getAlertSlugs } from '../../../lib/drupal';
+import { getAlertBySlug, getAlertSlugs, getAlerts } from '../../../lib/drupal';
+import { isEditor } from '../../../lib/auth';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
@@ -26,7 +28,11 @@ export async function generateMetadata({ params }) {
 
 export default async function AlertDetailPage({ params }) {
   const { slug } = await params;
-  const alert = await getAlertBySlug(slug);
+  const [alert, editor, latestAlerts] = await Promise.all([
+    getAlertBySlug(slug),
+    isEditor(),
+    getAlerts({ limit: 6 }),
+  ]);
   if (!alert) notFound();
 
   return (
@@ -34,6 +40,7 @@ export default async function AlertDetailPage({ params }) {
       <Header active="Noticias y alertas" />
       <main>
         <section className="articleHero">
+          {editor && <EditButton href="/admin/content?type=alerta" label="Editar esta alerta" />}
           <div className="container articleHeroGrid">
             <div>
               <div className="breadcrumbs"><Link href="/">Inicio</Link> / <Link href="/alertas">Noticias y alertas</Link> / {alert.title}</div>
@@ -48,14 +55,20 @@ export default async function AlertDetailPage({ params }) {
         <section className="section whiteSection">
           <div className="container articleLayout">
             <article className="articleBody">
-              <p className="articleLead">{alert.summary}</p>
-              {alert.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-              <blockquote>La rapidez del reporte y la conservación de evidencias son claves para reducir el impacto de un incidente.</blockquote>
+              {alert.summary && <p className="articleLead">{alert.summary}</p>}
+              {alert.body.map((section, i) => (
+                section.startsWith('<')
+                  ? <div key={i} className="articleSection" dangerouslySetInnerHTML={{ __html: section }} />
+                  : <p key={i}>{section}</p>
+              ))}
+              {alert.checklist.length > 0 && (
+                <blockquote>La rapidez del reporte y la conservación de evidencias son claves para reducir el impacto de un incidente.</blockquote>
+              )}
               <ChecklistBlock items={alert.checklist} />
               <div className="tags large">{alert.tags.map((tag) => <span key={tag}>#{tag}</span>)}</div>
             </article>
             <aside className="articleRail">
-              <UsefulLinksBlock links={alert.links} />
+              <RecentAlertsBlock alerts={latestAlerts} currentSlug={alert.slug} />
               <section className="adminBlock contactBlock">
                 <h3>Reportar relacionado</h3>
                 <p>Si esta publicación describe algo que te ocurrió, contacta al CSIRT UTPL con evidencias.</p>

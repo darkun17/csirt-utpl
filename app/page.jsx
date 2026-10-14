@@ -2,13 +2,16 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import AlertCard from '../components/AlertCard';
 import VideoLibrary from '../components/VideoLibrary';
+import EditButton from '../components/EditButton';
 import Link from 'next/link';
 import { contactEmail } from '../data/content';
+import { isEditor } from '../lib/auth';
 import {
   getAlerts,
   getServices,
   getLearningTracks,
-  getVisualGuides,
+  getPageBlock,
+  getPageItems,
 } from '../lib/drupal';
 
 export const revalidate = 60;
@@ -38,13 +41,6 @@ const MailIcon = () => (
 const ShieldIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-  </svg>
-);
-
-const NewspaperIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 0-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/>
-    <path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/>
   </svg>
 );
 
@@ -80,21 +76,33 @@ const DocIcon = () => (
   </svg>
 );
 
-/* ── Data ── */
-const benefits = [
-  { icon: <BellIcon />,   title: 'Alertas oportunas', text: 'Noticias y recomendaciones para actuar antes de que el riesgo crezca.' },
-  { icon: <BookIcon />,   title: 'Cultura digital',   text: 'Materiales simples para estudiantes, docentes y equipos administrativos.' },
-  { icon: <MailIcon />,   title: 'Canal oficial',     text: `Reporte directo al correo ${contactEmail}.` },
-  { icon: <ShieldIcon />, title: 'Respaldo UTPL',     text: 'Gestión institucional de seguridad de la información.' },
+/* ── Fallback (solo si Drupal no responde) ── */
+const BENEFIT_ICONS = [<BellIcon key="b" />, <BookIcon key="c" />, <MailIcon key="m" />];
+const benefitsFallback = [
+  { title: 'Alertas oportunas', text: 'Noticias y recomendaciones para actuar antes de que el riesgo crezca.' },
+  { title: 'Cultura digital',   text: 'Materiales simples para estudiantes, docentes y equipos administrativos.' },
+  { title: 'Canal oficial',     text: `Reporte directo al correo ${contactEmail}.` },
 ];
 
-const ctaItems = [
-  { icon: <NewspaperIcon />, title: 'Mantente informado', sub: 'Noticias y alertas',  href: '/alertas',              label: 'Ver alertas',   isExternal: false },
-  { icon: <BookIcon />,      title: 'Aprende más',        sub: 'Guías y recursos',    href: '/recursos',             label: 'Documentación', isExternal: false },
-  { icon: <MailIcon />,      title: 'Reporta incidente',  sub: 'Canal seguro CSIRT',  href: `mailto:${contactEmail}`, label: 'Reportar',     isExternal: true  },
+const statsFallback = [
+  { title: 'CSIRT', text: 'Punto de contacto' },
+  { title: 'UTPL', text: 'Respaldo institucional' },
+  { title: '24/7', text: 'Prevención continua' },
+  { title: '+Guías', text: 'Aprendizaje práctico' },
 ];
 
-const values = [
+const heroBotonesFallback = [
+  { title: 'Explorar publicaciones', href: '/alertas' },
+  { title: 'Reportar incidente', href: '/reportar-incidente' },
+];
+
+const servicesCtaFallback = [
+  { title: 'Reportar incidente →', href: '/reportar-incidente' },
+  { title: 'Conoce nuestros recursos →', href: '/recursos' },
+];
+const SERVICES_CTA_ICONS = [ShieldIcon, DocIcon];
+
+const valuesFallback = [
   'Confidencialidad de la información',
   'Prevención y respuesta oportuna',
   'Aprendizaje permanente',
@@ -103,15 +111,51 @@ const values = [
   'Mejora continua',
 ];
 
+const ctaFinalLinksFallback = [
+  { kicker: 'Ya te decidiste', title: 'Oferta académica →', href: 'https://utpl.edu.ec/oferta' },
+  { kicker: 'Más información', title: 'Escríbenos →', href: 'https://wa.me/593999565400' },
+  { kicker: 'Más motivación', title: 'Historias de éxito →', href: 'https://www.youtube.com/watch?v=FLuQ5B9Z7Uc&list=PLKiIhBZ1QsqrEPPUgdD325VQUa8_NgZ_g&pp=iAQB' },
+];
+
 const ICONS_SVC = [ShieldIcon, BellIcon, GradCapIcon, TrendIcon];
 
 export default async function HomePage() {
-  const [latestAlerts, services, learningTracks, visualGuides] = await Promise.all([
+  const [
+    editor, latestAlerts, services, learningTracks,
+    heroBlock, sobreBlock, sobreItems,
+    beneficios, heroBotones, stats,
+    ofertaBlock,
+    aprendizajeBlock, serviciosBlock, serviciosCta,
+    valoresBlock, valoresItems,
+    videosBlock, ctaFinalBlock, ctaFinalLinks,
+  ] = await Promise.all([
+    isEditor(),
     getAlerts({ limit: 6 }),
     getServices(),
     getLearningTracks(),
-    getVisualGuides(),
+    getPageBlock('inicio', 'hero'),
+    getPageBlock('inicio', 'sobre'),
+    getPageItems('inicio', 'sobre'),
+    getPageItems('inicio', 'beneficios'),
+    getPageItems('inicio', 'hero-botones'),
+    getPageItems('inicio', 'stats'),
+    getPageBlock('inicio', 'oferta-contenidos'),
+    getPageBlock('inicio', 'aprendizaje'),
+    getPageBlock('inicio', 'servicios'),
+    getPageItems('inicio', 'servicios-cta'),
+    getPageBlock('inicio', 'valores'),
+    getPageItems('inicio', 'valores'),
+    getPageBlock('inicio', 'videos'),
+    getPageBlock('inicio', 'cta-final'),
+    getPageItems('inicio', 'cta-final'),
   ]);
+
+  const benefits   = beneficios.length ? beneficios.map((i) => ({ title: i.title, text: i.description })) : benefitsFallback;
+  const heroBtns    = heroBotones.length ? heroBotones : heroBotonesFallback;
+  const aboutStats  = stats.length ? stats.map((i) => ({ title: i.title, text: i.description })) : statsFallback;
+  const servicesCta = serviciosCta.length ? serviciosCta : servicesCtaFallback;
+  const values      = valoresItems.length ? valoresItems.map((i) => i.title) : valuesFallback;
+  const ctaLinks    = ctaFinalLinks.length ? ctaFinalLinks : ctaFinalLinksFallback;
 
   return (
     <>
@@ -120,25 +164,34 @@ export default async function HomePage() {
 
         {/* ── Hero ── */}
         <section className="utplHero">
-          <div className="utplHeroBg" />
+          {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="Hero / Cabecera" />}
+          {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="Hero — botones y beneficios" pos="tl" />}
+          <div
+            className="utplHeroBg"
+            style={heroBlock?.imagenFondo ? { backgroundImage: `linear-gradient(100deg, rgba(0,28,55,.94) 0%, rgba(0,42,82,.82) 38%, rgba(0,50,95,.55) 62%, rgba(0,38,72,.40) 100%), url(${heroBlock.imagenFondo})` } : undefined}
+          />
           <div className="container utplHeroGrid">
             <div className="utplHeroInner">
-              <span className="eyebrow">Seguridad que transforma</span>
-              <h1>Protege tu información con el CSIRT UTPL</h1>
-              <p>Portal universitario de noticias, manuales, tips y novedades de seguridad para capacitar a la comunidad UTPL.</p>
+              <span className="eyebrow">{heroBlock?.kicker || 'Seguridad que transforma'}</span>
+              <h1>{heroBlock?.titulo || 'Protege tu información con el CSIRT UTPL'}</h1>
+              {heroBlock?.cuerpo
+                ? <div dangerouslySetInnerHTML={{ __html: heroBlock.cuerpo }} />
+                : <p>Portal universitario de noticias, manuales, tips y novedades de seguridad para capacitar a la comunidad UTPL.</p>
+              }
               <div className="heroActions">
-                <Link className="btnPrimary" href="/alertas">Explorar publicaciones</Link>
-                <Link className="btnGhostLight" href="/reportar-incidente">Reportar incidente</Link>
+                {heroBtns.map((btn, i) => (
+                  <Link key={btn.title} className={i === 0 ? 'btnPrimary' : 'btnGhostLight'} href={btn.href ?? '#'}>{btn.title}</Link>
+                ))}
               </div>
             </div>
             <div className="utplHeroVisual" aria-hidden="true">
-              <img src="/assets/hero-shield.svg" alt="" />
+              <img src={heroBlock?.imagen || '/assets/hero-shield.svg'} alt="" />
             </div>
           </div>
           <div className="container heroBenefits">
-            {benefits.map(({ icon, title, text }) => (
+            {benefits.map(({ title, text }, i) => (
               <article key={title}>
-                <span aria-hidden="true">{icon}</span>
+                <span aria-hidden="true">{BENEFIT_ICONS[i] ?? BENEFIT_ICONS[0]}</span>
                 <div><strong>{title}</strong><p>{text}</p></div>
               </article>
             ))}
@@ -147,55 +200,78 @@ export default async function HomePage() {
 
         {/* ── Quiénes somos ── */}
         <section className="section aboutPanel">
+          {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="Quiénes somos — texto" />}
+          {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="Estadísticas" pos="br" />}
           <div className="container aboutGrid">
-            <img src="https://picsum.photos/seed/csirt-security-team/900/680" alt="Equipo CSIRT UTPL" />
+            <img
+              src={sobreBlock?.imagen || sobreItems[0]?.image || 'https://picsum.photos/seed/csirt-security-team/900/680'}
+              alt="Equipo CSIRT UTPL"
+            />
             <div>
-              <span className="eyebrow dark">Quiénes somos</span>
-              <h2>Equipo de Respuesta a Incidentes de Seguridad Informática</h2>
-              <p>El CSIRT-UTPL brinda atención, soporte y respuesta a incidentes de seguridad, y publica contenidos educativos para fortalecer la cultura digital de estudiantes, docentes y colaboradores.</p>
+              <span className="eyebrow dark">{sobreBlock?.kicker || 'Quiénes somos'}</span>
+              <h2>{sobreBlock?.titulo || 'Equipo de Respuesta a Incidentes de Seguridad Informática'}</h2>
+              {sobreBlock?.cuerpo
+                ? <div dangerouslySetInnerHTML={{ __html: sobreBlock.cuerpo }} />
+                : <p>El CSIRT-UTPL brinda atención, soporte y respuesta a incidentes de seguridad, y publica contenidos educativos para fortalecer la cultura digital de estudiantes, docentes y colaboradores.</p>
+              }
               <div className="aboutStats">
-                <div><strong>CSIRT</strong><span>Punto de contacto</span></div>
-                <div><strong>UTPL</strong><span>Respaldo institucional</span></div>
-                <div><strong>24/7</strong><span>Prevención continua</span></div>
-                <div><strong>+Guías</strong><span>Aprendizaje práctico</span></div>
+                {aboutStats.map(({ title, text }) => (
+                  <div key={title}><strong>{title}</strong><span>{text}</span></div>
+                ))}
               </div>
             </div>
           </div>
         </section>
 
-        {/* ── Oferta de contenidos ── */}
+        {/* ── Oferta de contenidos (Alertas) ── */}
         <section className="section programSection">
+          {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="Oferta de contenidos — texto" />}
+          {editor && <EditButton href="/admin/content?type=alerta" label="Alertas / Noticias" pos="tl" />}
           <div className="container">
             <div className="sectionHead centered">
               <div>
-                <span className="eyebrow dark">Oferta de contenidos</span>
-                <h2>Noticias, manuales y recomendaciones</h2>
-                <p>Información organizada como un portal universitario para aprender, prevenir y reportar.</p>
+                <span className="eyebrow dark">{ofertaBlock?.kicker || 'Oferta de contenidos'}</span>
+                <h2>{ofertaBlock?.titulo || 'Noticias, manuales y recomendaciones'}</h2>
+                {ofertaBlock?.cuerpo
+                  ? <div dangerouslySetInnerHTML={{ __html: ofertaBlock.cuerpo }} />
+                  : <p>Información organizada como un portal universitario para aprender, prevenir y reportar.</p>
+                }
               </div>
             </div>
-            <div className="programCards">
-              {latestAlerts.map((alert) => (
-                <AlertCard key={alert.slug} alert={alert} />
-              ))}
-            </div>
-            <div className="programCtaRow">
-              <Link href="/alertas" className="btnOutline">Ver todas las publicaciones →</Link>
-            </div>
+            {latestAlerts.length > 0 ? (
+              <>
+                <div className="programCards">
+                  {latestAlerts.map((alert) => (
+                    <AlertCard key={alert.slug} alert={alert} />
+                  ))}
+                </div>
+                <div className="programCtaRow">
+                  <Link href="/alertas" className="btnOutline">Ver todas las publicaciones →</Link>
+                </div>
+              </>
+            ) : (
+              <p className="emptyState">Aún no hay publicaciones. Crea la primera desde el panel Drupal.</p>
+            )}
           </div>
         </section>
 
         {/* ── Educación continua ── */}
         <section className="section learningShowcase">
+          {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="Rutas de aprendizaje — tiles" />}
+          {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="Educación continua — texto" pos="br" />}
           <div className="container learningShowcaseGrid">
             <div>
-              <span className="eyebrow dark">Educación continua</span>
-              <h2>Aprendizaje flexible para protegerte mejor</h2>
-              <p>Rutas breves para convertir buenas prácticas en hábitos diarios: phishing, contraseñas, dispositivos y reporte oportuno.</p>
+              <span className="eyebrow dark">{aprendizajeBlock?.kicker || 'Educación continua'}</span>
+              <h2>{aprendizajeBlock?.titulo || 'Aprendizaje flexible para protegerte mejor'}</h2>
+              {aprendizajeBlock?.cuerpo
+                ? <div dangerouslySetInnerHTML={{ __html: aprendizajeBlock.cuerpo }} />
+                : <p>Rutas breves para convertir buenas prácticas en hábitos diarios: phishing, contraseñas, dispositivos y reporte oportuno.</p>
+              }
               <Link className="btnOutline" href="/recursos">Explorar recursos</Link>
             </div>
             <div className="learningTiles">
               {learningTracks.map((item) => (
-                <Link href={item.href} key={item.title}>
+                <Link href={item.href ?? '#'} key={item.title}>
                   <span>{item.kicker}</span>
                   <strong>{item.title}</strong>
                   <p>{item.text}</p>
@@ -205,40 +281,23 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* ── Campañas visuales ── */}
-        <section className="section visualSection">
-          <div className="container">
-            <div className="sectionHead centered">
-              <div>
-                <span className="eyebrow dark">Concientización digital</span>
-                <h2>Material educativo para la comunidad UTPL</h2>
-                <p>Guías visuales y piezas de comunicación para fortalecer la cultura de seguridad informática.</p>
-              </div>
-            </div>
-            <div className="visualGrid">
-              {visualGuides.map((item) => (
-                <article className="visualCard" key={item.title}>
-                  <img src={item.image} alt="" aria-hidden="true" />
-                  <h3>{item.title}</h3>
-                  <p>{item.text}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <VideoLibrary />
+        <VideoLibrary editor={editor} block={videosBlock} />
 
         {/* ── Servicios + Valores ── */}
         <section className="section valuesBand">
+          {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="Servicios CSIRT, botones y valores — tarjetas" />}
+          {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="Servicios y Valores — texto" pos="br" />}
           <div className="container svcValGrid">
 
             {/* Left: Services */}
             <div>
-              <span className="eyebrow dark">Servicios CSIRT</span>
-              <h2 className="svcMainTitle">Prevención, respuesta y capacitación</h2>
+              <span className="eyebrow dark">{serviciosBlock?.kicker || 'Servicios CSIRT'}</span>
+              <h2 className="svcMainTitle">{serviciosBlock?.titulo || 'Prevención, respuesta y capacitación'}</h2>
               <div className="svcTitleAccent" />
-              <p className="svcDesc">Brindamos servicios especializados para fortalecer la seguridad de la información en la comunidad UTPL, promoviendo una cultura digital segura y resiliente.</p>
+              {serviciosBlock?.cuerpo
+                ? <div className="svcDesc" dangerouslySetInnerHTML={{ __html: serviciosBlock.cuerpo }} />
+                : <p className="svcDesc">Brindamos servicios especializados para fortalecer la seguridad de la información en la comunidad UTPL, promoviendo una cultura digital segura y resiliente.</p>
+              }
 
               <div className="svcCardGrid">
                 {ICONS_SVC.map((Icon, i) => services[i] && (
@@ -252,12 +311,14 @@ export default async function HomePage() {
               </div>
 
               <div className="svcCtaRow">
-                <Link href="/reportar-incidente" className="svcBtnPrimary">
-                  <ShieldIcon /> Reportar incidente →
-                </Link>
-                <Link href="/recursos" className="svcBtnLink">
-                  <DocIcon /> Conoce nuestros recursos →
-                </Link>
+                {servicesCta.map((btn, i) => {
+                  const Icon = SERVICES_CTA_ICONS[i] ?? ShieldIcon;
+                  return (
+                    <Link key={btn.title} href={btn.href ?? '#'} className={i === 0 ? 'svcBtnPrimary' : 'svcBtnLink'}>
+                      <Icon /> {btn.title}
+                    </Link>
+                  );
+                })}
               </div>
             </div>
 
@@ -266,11 +327,14 @@ export default async function HomePage() {
               <div className="valCardHeader">
                 <div className="valCardIconCircle"><PersonShieldIcon /></div>
                 <div>
-                  <h3 className="valCardTitle">Nuestros valores</h3>
+                  <h3 className="valCardTitle">{valoresBlock?.titulo || 'Nuestros valores'}</h3>
                   <div className="valCardAccent" />
                 </div>
               </div>
-              <p className="valCardDesc">Actuamos con principios que guían cada decisión y acción para proteger la información y a nuestra comunidad.</p>
+              {valoresBlock?.cuerpo
+                ? <div className="valCardDesc" dangerouslySetInnerHTML={{ __html: valoresBlock.cuerpo }} />
+                : <p className="valCardDesc">Actuamos con principios que guían cada decisión y acción para proteger la información y a nuestra comunidad.</p>
+              }
               <div className="valCardGrid">
                 {values.map((value) => (
                   <div className="valCardItem" key={value}>
@@ -279,7 +343,6 @@ export default async function HomePage() {
                   </div>
                 ))}
               </div>
-              {/* Watermark */}
               <div className="valWatermark" aria-hidden="true">
                 <svg viewBox="0 0 120 140" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M60 4L8 24v44c0 34 22 64 52 76 30-12 52-42 52-76V24L60 4z" stroke="currentColor" strokeWidth="3"/>
@@ -294,27 +357,26 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* ── CTA "decide proteger más" ── */}
+        {/* ── CTA ── */}
         <section className="moreCta">
+          {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="CTA final — texto" />}
+          {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="CTA final — enlaces" pos="tl" />}
           <div className="container">
             <div className="moreCtaHead">
-              <p className="moreCtaIntro">¡Únete a la UTPL y</p>
-              <strong className="moreCtaTitle">decide proteger más</strong>
-              <p className="moreCtaSub">en la universidad <strong>más innovadora del Ecuador!</strong></p>
+              <p className="moreCtaIntro">{ctaFinalBlock?.kicker || '¡Únete a la UTPL y'}</p>
+              <strong className="moreCtaTitle">{ctaFinalBlock?.titulo || 'decide proteger más'}</strong>
+              {ctaFinalBlock?.cuerpo
+                ? <div className="moreCtaSub" dangerouslySetInnerHTML={{ __html: ctaFinalBlock.cuerpo }} />
+                : <p className="moreCtaSub">en la universidad <strong>más innovadora del Ecuador!</strong></p>
+              }
             </div>
             <div className="moreCtaActions">
-              <div className="moreCtaAction">
-                <span>Ya te decidiste</span>
-                <a href="https://utpl.edu.ec/oferta" target="_blank" rel="noreferrer" className="moreCtaBtn">Oferta académica →</a>
-              </div>
-              <div className="moreCtaAction">
-                <span>Más información</span>
-                <a href="https://wa.me/593999565400" target="_blank" rel="noreferrer" className="moreCtaBtn">Escríbenos →</a>
-              </div>
-              <div className="moreCtaAction">
-                <span>Más motivación</span>
-                <a href="https://www.youtube.com/watch?v=FLuQ5B9Z7Uc&list=PLKiIhBZ1QsqrEPPUgdD325VQUa8_NgZ_g&pp=iAQB" target="_blank" rel="noreferrer" className="moreCtaBtn">Historias de éxito →</a>
-              </div>
+              {ctaLinks.map((link) => (
+                <div className="moreCtaAction" key={link.title}>
+                  <span>{link.kicker}</span>
+                  <a href={link.href ?? '#'} target="_blank" rel="noreferrer" className="moreCtaBtn">{link.title}</a>
+                </div>
+              ))}
             </div>
           </div>
         </section>

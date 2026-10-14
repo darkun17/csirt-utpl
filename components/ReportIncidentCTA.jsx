@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import EditButton from './EditButton';
 
 const benefits = [
   {
@@ -42,12 +43,25 @@ const benefits = [
   },
 ];
 
+const botonesFallback = [
+  { title: 'Reportar incidente →', href: '/reportar-incidente' },
+  { title: 'Ver recomendaciones →', href: '/recursos' },
+];
+
 export default function ReportIncidentCTA({
   title = '¿Detectaste un incidente de seguridad?',
   description = 'Reporta cualquier evento sospechoso que pueda afectar cuentas, equipos, servicios digitales o información institucional de la UTPL.',
+  descriptionHtml = null,
+  botones = [],
+  note = null,
+  editor = false,
+  editHref = null,
+  editLabel = 'CTA reporte incidente',
 }) {
+  const btns = botones.length === 2 ? botones : botonesFallback;
   return (
     <section className="reportCtaBand">
+      {editor && editHref && <EditButton href={editHref} label={editLabel} />}
       <div className="reportCtaDotsBg" />
 
       <div className="container reportCtaGrid">
@@ -62,22 +76,25 @@ export default function ReportIncidentCTA({
           </div>
 
           <h2>{title}</h2>
-          <p>{description}</p>
+          {descriptionHtml
+            ? <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
+            : <p>{description}</p>
+          }
 
           <div className="reportCtaActions">
-            <Link href="/reportar-incidente" className="reportCtaBtnPrimary">
+            <Link href={btns[0].href || '/reportar-incidente'} className="reportCtaBtnPrimary">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
                 <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
               </svg>
-              Reportar incidente →
+              {btns[0].title}
             </Link>
-            <Link href="/recursos" className="reportCtaBtnOutline">
+            <Link href={btns[1].href || '/recursos'} className="reportCtaBtnOutline">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                 <circle cx="12" cy="12" r="3"/>
               </svg>
-              Ver recomendaciones →
+              {btns[1].title}
             </Link>
           </div>
 
@@ -86,7 +103,7 @@ export default function ReportIncidentCTA({
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
               <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
             </svg>
-            Tu reporte es confidencial y será gestionado por el equipo CSIRT UTPL.
+            {note || 'Tu reporte es confidencial y será gestionado por el equipo CSIRT UTPL.'}
           </p>
         </div>
 

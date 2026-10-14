@@ -1,8 +1,11 @@
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import ReportIncidentCTA from '../../components/ReportIncidentCTA';
+import EditButton from '../../components/EditButton';
 import Link from 'next/link';
-import { contactEmail, rfcSections } from '../../data/content';
+import { contactEmail } from '../../data/content';
+import { getRfcSections, getPageBlock, getPageItems } from '../../lib/drupal';
+import { isEditor } from '../../lib/auth';
 
 export const metadata = {
   title: 'RFC 2350 | CSIRT UTPL',
@@ -19,19 +22,35 @@ const incidentReportInfo = [
   'Si ya notificaste a otras áreas o personas',
 ];
 
-export default function RFC2350Page() {
+export const revalidate = 60;
+
+export default async function RFC2350Page() {
+  const [rfcSections, editor, heroBlock, resumenItems, procedimientoItems, avisoBlock, ctaBlock, ctaBotones] = await Promise.all([
+    getRfcSections(),
+    isEditor(),
+    getPageBlock('rfc2350', 'hero'),
+    getPageItems('rfc2350', 'resumen'),
+    getPageItems('rfc2350', 'procedimiento'),
+    getPageBlock('rfc2350', 'aviso-legal'),
+    getPageBlock('rfc2350', 'cta'),
+    getPageItems('rfc2350', 'cta-botones'),
+  ]);
   return (
     <>
       <Header active="RFC 2350" />
       <main id="main-content">
         <section className="richPageHero richHero--rfc">
+          {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="Hero RFC 2350" />}
           <div className="richPageHeroBg" />
           <div className="richHeroAccentLine" />
           <div className="container richHeroGrid">
             <div className="richHeroCopy">
-              <span className="eyebrow">Norma RFC 2350</span>
-              <h1>Identidad, alcance y servicios del CSIRT UTPL</h1>
-              <p>Documento de referencia para comunicar la comunidad atendida, políticas, servicios y procedimientos del equipo.</p>
+              <span className="eyebrow">{heroBlock?.kicker || 'Norma RFC 2350'}</span>
+              <h1>{heroBlock?.titulo || 'Identidad, alcance y servicios del CSIRT UTPL'}</h1>
+              {heroBlock?.cuerpo
+                ? <div dangerouslySetInnerHTML={{ __html: heroBlock.cuerpo }} />
+                : <p>Documento de referencia para comunicar la comunidad atendida, políticas, servicios y procedimientos del equipo.</p>
+              }
               <div className="heroActions">
                 <Link className="btnPrimary" href="/reportar-incidente">Reportar incidente</Link>
                 <Link className="btnGhostLight" href="/servicios">Ver servicios</Link>
@@ -103,6 +122,8 @@ export default function RFC2350Page() {
         </section>
 
         <section className="section whiteSection">
+          {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="Secciones RFC 2350 — tarjetas" />}
+          {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="Resumen (misión/comunidad/horario)" pos="br" />}
           <div className="container rfcIntro">
             <div>
               <span className="eyebrow dark">Contacto</span>
@@ -111,9 +132,16 @@ export default function RFC2350Page() {
             <p>Esta página convierte la norma histórica del CSIRT en una consulta rápida para usuarios internos, pares de respuesta a incidentes y actores institucionales.</p>
           </div>
           <div className="container rfcSummary">
-            <article><strong>Misión</strong><span>Punto único de contacto para atención, prevención y respuesta a incidentes de seguridad de la UTPL.</span></article>
-            <article><strong>Comunidad</strong><span>Funcionarios, estudiantes, servicios digitales, sistemas y redes institucionales.</span></article>
-            <article><strong>Horario</strong><span>Lunes a viernes, 8:00-13:00 y 15:30-18:30.</span></article>
+            {(resumenItems.length ? resumenItems : [
+              { kicker: 'Misión',    description: 'Punto único de contacto para atención, prevención y respuesta a incidentes de seguridad de la UTPL.' },
+              { kicker: 'Comunidad', description: 'Funcionarios, estudiantes, servicios digitales, sistemas y redes institucionales.' },
+              { kicker: 'Horario',   description: 'Lunes a viernes, 8:00-13:00 y 15:30-18:30.' },
+            ]).map((item) => (
+              <article key={item.kicker || item.title}>
+                <strong>{item.kicker || item.title}</strong>
+                <span>{item.description || item.text}</span>
+              </article>
+            ))}
           </div>
           <div className="container rfcGrid">
             {rfcSections.map(([title, text]) => (
@@ -127,6 +155,7 @@ export default function RFC2350Page() {
 
         {/* ── Notificación de incidentes ── */}
         <section className="section">
+          {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="Procedimiento — pasos" />}
           <div className="container">
             <span className="eyebrow dark">Procedimiento</span>
             <h2 style={{ color: 'var(--color-primary)', marginBottom: 8 }}>Notificación de incidentes</h2>
@@ -135,7 +164,10 @@ export default function RFC2350Page() {
               incluye la siguiente información al contactar al CSIRT UTPL:
             </p>
             <ul style={{ listStyle: 'none', padding: 0, display: 'grid', gap: 10 }}>
-              {incidentReportInfo.map((item, idx) => (
+              {(procedimientoItems.length
+                ? procedimientoItems.map(i => i.title || i.description)
+                : incidentReportInfo
+              ).map((item, idx) => (
                 <li key={item} style={{ display: 'flex', gap: 12, alignItems: 'flex-start', fontSize: '11.2pt', color: 'var(--color-text-muted)' }}>
                   <span style={{
                     display: 'grid', placeItems: 'center',
@@ -155,6 +187,7 @@ export default function RFC2350Page() {
 
         {/* ── Disclaimer ── */}
         <section className="section whiteSection">
+          {editor && <EditButton href="/admin/content/block?type=bloque_pagina" label="Aviso legal" />}
           <div className="container legalNotice">
 
             {/* Left: icon */}
@@ -173,17 +206,20 @@ export default function RFC2350Page() {
             <div className="legalNoticeBody">
               <span className="legalNoticeEyebrow">Información institucional</span>
               <div className="legalNoticeAccent" />
-              <h2>Aviso legal</h2>
-              <p>
-                La información contenida en este documento es de carácter institucional y puede
-                actualizarse sin previo aviso. El CSIRT UTPL no asume responsabilidad por daños
-                derivados del uso inadecuado de la información publicada. La cooperación con este
-                equipo es voluntaria; sin embargo, se recomienda encarecidamente a todos los
-                miembros de la comunidad universitaria reportar incidentes oportunamente para
-                minimizar el impacto de eventos de seguridad. Este documento sigue los lineamientos
-                de la norma RFC 2350 y puede ser consultado de forma pública como parte de la
-                política de transparencia institucional de la UTPL.
-              </p>
+              <h2>{avisoBlock?.titulo || 'Aviso legal'}</h2>
+              {avisoBlock?.cuerpo
+                ? <div dangerouslySetInnerHTML={{ __html: avisoBlock.cuerpo }} />
+                : <p>
+                    La información contenida en este documento es de carácter institucional y puede
+                    actualizarse sin previo aviso. El CSIRT UTPL no asume responsabilidad por daños
+                    derivados del uso inadecuado de la información publicada. La cooperación con este
+                    equipo es voluntaria; sin embargo, se recomienda encarecidamente a todos los
+                    miembros de la comunidad universitaria reportar incidentes oportunamente para
+                    minimizar el impacto de eventos de seguridad. Este documento sigue los lineamientos
+                    de la norma RFC 2350 y puede ser consultado de forma pública como parte de la
+                    política de transparencia institucional de la UTPL.
+                  </p>
+              }
 
               {/* Footer note */}
               <div className="legalNoticeFooter">
@@ -201,7 +237,14 @@ export default function RFC2350Page() {
           </div>
         </section>
 
-        <ReportIncidentCTA />
+        <ReportIncidentCTA
+          editor={editor}
+          editHref="/admin/content/block?type=bloque_pagina"
+          title={ctaBlock?.titulo || undefined}
+          descriptionHtml={ctaBlock?.cuerpo || undefined}
+          botones={ctaBotones.map(i => ({ title: i.title, href: i.href }))}
+          note={ctaBlock?.kicker || undefined}
+        />
 
       </main>
       <Footer />

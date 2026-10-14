@@ -1,4 +1,4 @@
-const severityLevels = [
+const severityLevelsFallback = [
   {
     label: 'Crítica',
     color: '#d32f2f',
@@ -36,7 +36,21 @@ const severityLevels = [
   },
 ];
 
-export default function SeverityMatrix() {
+// Mapeo a item_pagina (pagina=servicios, seccion=severidad), reusando
+// campos genericos con otro sentido: kicker=color (hex), channel=ejemplo,
+// source=respuesta objetivo. No hay campos dedicados para esto en el
+// esquema generico, pero asi queda editable sin crear campos nuevos.
+export default function SeverityMatrix({ items = [] }) {
+  const levels = items.length
+    ? items.map((i) => ({
+        label: i.title,
+        color: i.kicker || '#004270',
+        description: i.description,
+        example: i.channel,
+        response: i.source && i.source !== 'YouTube' ? i.source : '',
+      }))
+    : severityLevelsFallback;
+
   return (
     <div style={{ overflowX: 'auto' }}>
       <table className="severityTable">
@@ -49,7 +63,7 @@ export default function SeverityMatrix() {
           </tr>
         </thead>
         <tbody>
-          {severityLevels.map((level) => (
+          {levels.map((level) => (
             <tr key={level.label}>
               <td>
                 <span

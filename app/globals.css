@@ -599,7 +599,7 @@ textarea {
   box-shadow: 0 8px 32px rgba(0, 66, 112, 0.14);
   border-radius: 14px;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 0;
   padding: 0;
 }
@@ -1626,6 +1626,12 @@ textarea {
 .resourceCard a:hover {
   color: var(--color-accent-dark);
 }
+.resourceComingSoon {
+  display: inline-flex;
+  font-weight: 700;
+  font-size: 11.2pt;
+  color: var(--muted);
+}
 
 /* ─────────────────────────────────────────────────────────────────────────
    16. RFC CARDS
@@ -2616,6 +2622,104 @@ textarea {
   font-weight: 300;
 }
 
+/* ── Evento cards (Iniciativas) ── */
+.eventoCards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-top: 32px;
+}
+
+.eventoCard {
+  background: white;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 8px 32px rgba(0, 66, 112, 0.09);
+  border-radius: 20px;
+  padding: 40px 36px;
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+  transition: box-shadow 0.2s;
+}
+
+.eventoCard:hover {
+  box-shadow: 0 16px 48px rgba(0, 66, 112, 0.15);
+}
+
+.eventoCardIconWrap {
+  flex-shrink: 0;
+  position: relative;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eventoCardIconWrap::before,
+.eventoCardIconWrap::after {
+  content: '+';
+  position: absolute;
+  color: var(--color-border);
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 1;
+}
+.eventoCardIconWrap::before { top: 2px; left: 2px; }
+.eventoCardIconWrap::after  { bottom: 2px; right: 2px; }
+
+.eventoCardIconCircle {
+  width: 84px;
+  height: 84px;
+  background: var(--color-primary-soft);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+}
+
+.eventoCardIconCircle img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+
+.eventoCardBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.eventoCardBody h3 {
+  color: var(--color-primary);
+  font-size: clamp(18px, 1.6vw, 22px);
+  margin: 0 0 0;
+  padding-bottom: 12px;
+  border-bottom: 3px solid var(--color-primary);
+  display: inline-block;
+}
+
+.eventoCardBody p {
+  font-size: 12.2pt;
+  color: var(--color-text-muted);
+  font-weight: 300;
+  margin: 14px 0 0;
+  line-height: 1.6;
+}
+
+.eventoCardLink {
+  display: inline-block;
+  margin-top: 20px;
+  font-weight: 700;
+  color: var(--color-primary);
+  font-size: 11.2pt;
+  text-decoration: none;
+}
+
+.eventoCardLink:hover {
+  color: var(--color-accent-dark);
+}
+
 .adminBlock {
   background: white;
   border: 1px solid var(--color-border);
@@ -2644,9 +2748,128 @@ textarea {
   color: var(--color-accent-dark);
 }
 
+.recentAlertsBlock ul {
+  list-style: none;
+  padding-left: 0;
+}
+.recentAlertsBlock li {
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+.recentAlertsBlock li:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.recentAlertsBlock a {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-weight: 700;
+}
+.recentAlertTitle {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--color-primary);
+}
+.recentAlertMeta {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--color-text-muted);
+}
+
 .contactBlock .btnPrimary {
   overflow-wrap: anywhere;
   text-align: center;
+}
+
+/* ── Temas de concientización ── */
+.concientizacionGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 28px;
+}
+.concientizacionCard {
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.concientizacionCard:hover {
+  box-shadow: 0 6px 20px rgba(0, 66, 112, 0.1);
+  transform: translateY(-2px);
+}
+.concientizacionCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.concientizacionIcon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+.concientizacionIcon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.concientizacionCategory {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+.concientizacionCard h3 {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1.35;
+  margin: 0;
+}
+.concientizacionCard p {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  flex: 1;
+  margin: 0;
+}
+.concientizacionLink {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+.concientizacionLink:hover {
+  color: var(--color-accent-dark);
+}
+.concientizacionSoon {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  opacity: 0.55;
+  font-style: italic;
+}
+@media (max-width: 1024px) {
+  .concientizacionGrid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 768px) {
+  .concientizacionGrid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .concientizacionGrid { grid-template-columns: 1fr; }
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -3296,6 +3519,16 @@ textarea {
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .eventoCards {
+    grid-template-columns: 1fr;
+  }
+  .eventoCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 28px 24px;
+  }
+
   /* Services intro: 2 cols on tablet */
   .servicesIntroGrid {
     grid-template-columns: repeat(2, 1fr);
@@ -3436,7 +3669,8 @@ textarea {
   .guideCards,
   .visualGrid,
   .programCards,
-  .learningTiles {
+  .learningTiles,
+  .eventoCards {
     grid-template-columns: 1fr;
   }
 
@@ -4989,4 +5223,189 @@ textarea {
 
   h1 { font-size: clamp(20px, 7.5vw, 28px); }
   h2 { font-size: clamp(16px, 6vw, 22px); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MODO EDICIÓN — barra admin + botones de sección
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Edit bar (top fixed) ── */
+.editBar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 40px;
+  background: #0f172a;
+  color: #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  z-index: 9999;
+  font-size: 12px;
+  font-family: var(--font-body), sans-serif;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.editBarLeft { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+.editBarDot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 6px rgba(34,197,94,0.7);
+  flex-shrink: 0;
+}
+
+.editBarLabel { font-weight: 600; color: #94a3b8; white-space: nowrap; }
+
+.editBarNav {
+  display: flex; align-items: center; gap: 2px;
+  overflow-x: auto; flex: 1;
+  scrollbar-width: none;
+}
+.editBarNav::-webkit-scrollbar { display: none; }
+
+.editBarLink {
+  padding: 4px 10px; border-radius: 4px;
+  color: #cbd5e1; text-decoration: none; font-size: 11px;
+  white-space: nowrap; transition: background 0.15s;
+}
+.editBarLink:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+.editBarLink--accent {
+  background: rgba(59,130,246,0.25);
+  color: #93c5fd;
+}
+.editBarLink--accent:hover { background: rgba(59,130,246,0.45); }
+
+.editBarLogout {
+  color: #f87171; text-decoration: none; font-size: 11px;
+  padding: 4px 10px; border-radius: 4px;
+  white-space: nowrap; transition: background 0.15s; flex-shrink: 0;
+}
+.editBarLogout:hover { background: rgba(248,113,113,0.12); }
+
+/* ── Edit button (per section) ── */
+.editBtn {
+  display: none;          /* hidden for regular visitors */
+  align-items: center;
+  gap: 5px;
+  position: absolute;
+  z-index: 50;
+  background: #3b82f6;
+  color: #fff;
+  text-decoration: none;
+  padding: 5px 11px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-body), sans-serif;
+  box-shadow: 0 2px 10px rgba(59,130,246,0.45);
+  transition: background 0.15s, transform 0.1s;
+  line-height: 1;
+}
+.editBtn:hover { background: #2563eb; transform: scale(1.03); color: #fff; }
+
+.editBtn--tr { top: 10px; right: 10px; }
+.editBtn--tl { top: 10px; left: 10px; }
+.editBtn--br { bottom: 10px; right: 10px; }
+
+/* ── Activate edit mode via body class ── */
+.edit-mode section,
+.edit-mode article.resourceCard,
+.edit-mode article.visualCard {
+  position: relative;
+}
+
+.edit-mode section:hover,
+.edit-mode article.resourceCard:hover,
+.edit-mode article.visualCard:hover {
+  outline: 1.5px dashed rgba(59,130,246,0.35);
+  outline-offset: -1px;
+}
+
+/* Show edit buttons on hover in edit mode */
+.edit-mode section:hover > .editBtn,
+.edit-mode article.resourceCard:hover > .editBtn,
+.edit-mode article.visualCard:hover > .editBtn {
+  display: flex;
+}
+
+/* ── Admin login page ── */
+.adminLoginPage {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: var(--color-bg);
+  padding: 24px;
+}
+
+.adminLoginForm {
+  background: white;
+  padding: 40px;
+  border-radius: 14px;
+  box-shadow: 0 4px 32px rgba(0,66,112,0.12);
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.adminLoginLogo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.adminLoginTitle {
+  margin: 0;
+  font-size: 20px;
+  color: var(--color-primary);
+  text-align: center;
+}
+
+.adminLoginSub {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text-muted);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.adminLoginInput {
+  padding: 10px 14px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: var(--font-body), sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.adminLoginInput:focus { border-color: var(--color-primary); }
+
+.adminLoginError {
+  color: #dc2626;
+  font-size: 13px;
+  margin: 0;
+}
+
+.adminLoginBtn { justify-content: center; width: 100%; }
+
+.adminLoginBack {
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 12px;
+  text-decoration: none;
+}
+.adminLoginBack:hover { color: var(--color-primary); }
+
+/* ── Empty state (when no Drupal content yet) ── */
+.emptyState {
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: 40px 20px;
+  font-size: 14px;
+  border: 1.5px dashed var(--color-border);
+  border-radius: 10px;
 }
