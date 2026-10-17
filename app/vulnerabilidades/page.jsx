@@ -388,8 +388,6 @@ export default async function VulnerabilidadesPage() {
             <div className="vulnInfoLayout">
               <div className="vulnCardIcon">
                 <svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <circle cx="12" cy="8" r="6"/>
-                  <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
                   <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
                 </svg>
               </div>
