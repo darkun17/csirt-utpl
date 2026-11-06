@@ -3238,165 +3238,101 @@ textarea {
    30. CSIRT SOCIAL BAND + FOOTER
    ───────────────────────────────────────────────────────────────────────── */
 
-/* ── Redes sociales del CSIRT — diseño estándar UTPL ── */
-:root {
-  --utpl-blue:      #004270;
-  --utpl-blue-dark: #07284b;
-}
-.csirtSocialBand {
-  background: #f7f9fb;
-  border-top: 1px solid rgba(0, 66, 112, 0.08);
-  border-bottom: 1px solid rgba(0, 66, 112, 0.06);
-}
-.csirtSocialInner {
-  display: grid;
-  gap: 1.25rem;
-  justify-items: center;
-  padding: 1.9rem 0 2rem;
-  max-width: 760px;
-  margin-inline: auto;
-}
-.csirtSocialLabel {
-  font-family: var(--font-heading), Montserrat, sans-serif;
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--utpl-blue-dark);
-}
-.csirtSocialIcons {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.85rem;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.csirtSocialBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 999px;
-  background: rgba(0, 66, 112, 0.07);
-  border: 1px solid rgba(0, 66, 112, 0.14);
-  text-decoration: none;
-  transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
-}
-.csirtSocialBtn:hover,
-.csirtSocialBtn:focus-visible {
-  background: rgba(0, 66, 112, 0.14);
-  border-color: rgba(0, 66, 112, 0.26);
-  transform: translateY(-2px);
-}
-.csirtSocialBtn svg {
-  width: 22px;
-  height: 22px;
-  color: var(--utpl-blue-dark);
-  opacity: 0.9;
-  transition: opacity 0.18s;
-}
-.csirtSocialBtn:hover svg {
-  opacity: 1;
-}
-@media (max-width: 576px) {
-  .csirtSocialInner {
-    padding: 1.35rem 0 1.45rem;
-    max-width: 100%;
-  }
-  .csirtSocialLabel {
-    font-size: 0.78rem;
-    text-align: center;
-  }
-}
-.utpl-footer {
-  background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-  color: white;
+/* ── Footer — mismo patrón visual/markup que becas.becas-footer, con los
+   tokens de color propios de CSIRT (var(--color-primary) en vez de
+   --becas-footer-bg) ── */
+.becas-footer {
+  background: var(--color-primary) !important;
 }
 
-.footer-main {
-  padding: 48px 0 32px;
-}
-.footer-main-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
+.wrapper-footer {
+  background: var(--color-primary) !important;
+  padding: 3em 24px 0;
   text-align: center;
 }
 
-.footer-brand {
-  height: 64px;
+.wrapper-footer > .logo {
+  display: block;
+  max-height: 56px;
   width: auto;
-  object-fit: contain;
-  /* SVG icon is already white; filter ensures visibility on gradient */
+  margin: 0 auto 32px;
   filter: brightness(0) invert(1);
-  opacity: 0.92;
 }
 
-.footer-contact {
-  margin: 0;
-  font-size: 11.2pt;
-  font-weight: 300;
-  color: rgba(255, 255, 255, 0.9);
-  line-height: 1.6;
+.wrapper-footer > p {
+  margin: 0 0 40px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, .85);
 }
-.footer-contact strong {
+
+.wrapper-footer > p b {
   font-weight: 700;
-  color: white;
-  margin-right: 6px;
-}
-.footer-contact span {
-  color: rgba(255, 255, 255, 0.82);
+  color: var(--color-white);
 }
 
-.footer-social-row {
+.wrapper-social {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 14px;
-  margin-top: 4px;
+  gap: 18px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 48px 56px;
 }
-.footer-social-row a {
-  display: grid;
-  place-items: center;
-  opacity: 0.78;
-  transition: opacity 0.18s, transform 0.18s;
+
+.wrapper-social a {
+  display: flex;
+  transition: transform .2s, opacity .2s;
 }
-.footer-social-row a:hover {
-  opacity: 1;
+
+.wrapper-social a:hover {
   transform: translateY(-2px);
+  opacity: .85;
 }
-.footer-social-row img {
-  width: 32px;
-  height: 32px;
+
+.wrapper-social img {
+  width: 34px;
+  height: 34px;
+  display: block;
   filter: brightness(0) invert(1);
 }
 
-.footer-legal {
-  background: rgba(0, 0, 0, 0.2);
-  padding: 12px 0;
+.wrapper-footerbottom {
+  border-top: 1px solid rgba(255, 255, 255, .15);
+  padding: 14px 0;
 }
-.footer-legal-inner {
+
+.wrapper-footerbottom .layout8 {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 24px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 8px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, .6);
 }
-.footer-legal-inner a {
-  color: rgba(255, 255, 255, 0.65);
-  font-size: 10.2pt;
-  font-weight: 300;
-  transition: color 0.15s;
+
+.wrapper-footerbottom .layout8 a {
+  color: rgba(255, 255, 255, .6);
+  text-decoration: none;
+  transition: color .2s;
 }
-.footer-legal-inner a:hover {
-  color: white;
+
+.wrapper-footerbottom .layout8 a:hover {
+  color: var(--color-white);
 }
-.footer-legal-inner span {
-  color: rgba(255, 255, 255, 0.4);
-  font-size: 10.2pt;
+
+.wrapper-footerbottom .layout8 p {
+  margin: 0;
+}
+
+@media (max-width: 576px) {
+  .wrapper-social { padding: 0 20px 40px; gap: 12px; justify-content: center; }
+  .wrapper-social img { width: 28px; height: 28px; }
+  .wrapper-footerbottom .layout8 { justify-content: center; text-align: center; }
 }
 
 /* Legacy footer class references — mapped to new footer */
@@ -5186,13 +5122,6 @@ textarea {
   .reportCtaBtnPrimary,
   .reportCtaBtnOutline { justify-content: center; width: 100%; }
   .reportCtaNote { font-size: 9.5pt; }
-
-  /* Footer */
-  .footer-main { padding: 32px 0 24px; }
-  .footer-social-row { gap: 10px; }
-  .footer-social-row a img { width: 28px; height: 28px; }
-  .footer-contact { text-align: center; font-size: 10pt; }
-  .footer-legal-inner { flex-direction: column; gap: 8px; align-items: center; text-align: center; }
 }
 
 /* ── Small mobile ≤ 420px ── */
