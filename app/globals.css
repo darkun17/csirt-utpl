@@ -2937,6 +2937,197 @@ textarea {
   height: 100%;
   border: 0;
 }
+
+/* ── Contenido externo bloqueado (antes de consentimiento) ── */
+.externalMediaGate {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 24px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.92);
+}
+.externalMediaGate__icon {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+}
+.externalMediaGate__text {
+  margin: 0;
+  font-size: 10.8pt;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.82);
+  max-width: 320px;
+}
+.externalMediaGate__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  background: var(--color-accent);
+  color: var(--color-primary-dark);
+  font-size: 10.8pt;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.externalMediaGate__btn:hover {
+  background: var(--color-accent-dark);
+}
+
+/* ── Modal de preferencias de cookies ── */
+.cookieOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(0, 20, 38, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.cookieDialog {
+  background: white;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: 32px;
+  box-shadow: 0 20px 60px rgba(0, 20, 38, 0.3);
+}
+.cookieDialog__title {
+  margin: 0 0 10px;
+  font-size: 18pt;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+.cookieDialog__intro {
+  margin: 0 0 24px;
+  font-size: 10.8pt;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+.cookieDialog__body {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-bottom: 26px;
+}
+.cookieCategory {
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 16px 18px;
+}
+.cookieCategory__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.cookieCategory__title {
+  font-size: 11.5pt;
+  font-weight: 700;
+  color: var(--color-primary);
+  cursor: default;
+}
+.cookieCategory__always {
+  font-size: 9pt;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+.cookieCategory__checkbox {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+.cookieCategory__desc {
+  margin: 0;
+  font-size: 10.2pt;
+  color: var(--color-text-muted);
+  line-height: 1.55;
+}
+.cookieDialog__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+.cookieBtn {
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 10.5pt;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.cookieBtn--ghost {
+  background: transparent;
+  color: var(--color-text-muted);
+  border-color: var(--color-border);
+}
+.cookieBtn--ghost:hover {
+  background: var(--color-bg);
+}
+.cookieBtn--outline {
+  background: transparent;
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.cookieBtn--outline:hover {
+  background: var(--color-primary-soft);
+}
+.cookieBtn--primary {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+.cookieBtn--primary:hover {
+  background: var(--color-primary-dark);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cookieBtn,
+  .externalMediaGate__btn {
+    transition: none;
+  }
+}
+
+@media (max-width: 576px) {
+  .cookieDialog { padding: 24px 20px; max-height: 92vh; }
+  .cookieDialog__actions { flex-direction: column; }
+  .cookieBtn { width: 100%; }
+}
+
+/* ── Botón "Configurar cookies" del footer ── */
+.footerCookiesBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footerCookiesBtn:hover {
+  color: var(--color-white, #fff);
+}
 .videoBody {
   padding: 28px;
 }

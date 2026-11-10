@@ -2,6 +2,7 @@ import './globals.css';
 import { Roboto, Montserrat } from 'next/font/google';
 import { isEditor } from '../lib/auth';
 import EditBar from '../components/EditBar';
+import CookieConsentProvider from '../components/cookies/CookieConsentProvider';
 
 const roboto = Roboto({
   subsets: ['latin'],
@@ -31,7 +32,9 @@ export default async function RootLayout({ children }) {
         <a href="#main-content" className="skipLink">Saltar al contenido principal</a>
         {editor && <EditBar />}
         {editor && <div aria-hidden="true" style={{ height: 40 }} />}
-        {children}
+        <CookieConsentProvider>
+          {children}
+        </CookieConsentProvider>
       </body>
     </html>
   );

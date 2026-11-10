@@ -1,5 +1,6 @@
 import { getReferenceVideos } from '../lib/drupal';
 import EditButton from './EditButton';
+import ExternalMediaGate from './cookies/ExternalMediaGate';
 
 export default async function VideoLibrary({ editor = false, block = null }) {
   const videos = await getReferenceVideos();
@@ -31,12 +32,7 @@ export default async function VideoLibrary({ editor = false, block = null }) {
           {videos.map((video) => (
             <article className="videoCard" key={video.embedUrl ?? video.title}>
               <div className="videoEmbed">
-                <iframe
-                  src={video.embedUrl}
-                  title={video.title}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                />
+                <ExternalMediaGate embedUrl={video.embedUrl} title={video.title} />
               </div>
               <div className="videoBody">
                 <span>{video.source}</span>

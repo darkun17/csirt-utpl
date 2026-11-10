@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import CookieSettingsButton from './cookies/CookieSettingsButton';
 
 const socials = [
   { label: 'Asesor',    href: 'https://www.utpl.edu.ec/asesor',                                          src: '/icons/social/asesor.svg'    },
@@ -42,6 +43,8 @@ export default function Footer() {
             <a href="https://www.utpl.edu.ec/privacidad" target="_blank" rel="noreferrer">Política de privacidad</a>
             <p> - </p>
             <a href="https://www.utpl.edu.ec/terminos" target="_blank" rel="noreferrer">Términos y condiciones</a>
+            <p> - </p>
+            <CookieSettingsButton className="footerCookiesBtn" />
           </div>
         </div>
       </div>
